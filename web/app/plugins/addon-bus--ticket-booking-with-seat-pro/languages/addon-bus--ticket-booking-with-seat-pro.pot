@@ -1,0 +1,144 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Bus Ticket Booking with Seat Reservation PRO\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-02-24 12:35+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.3.1; wp-5.3.2"
+
+#: wbtm-pro.php:61
+msgid ""
+"Bus Ticket Booking with Seat Reservation PRO Dependent on 3 Plugin: 1. Bus "
+"Ticket Booking with Seat Reservation. 2. Woocommerce & 3. MagePeople PDF "
+"Support. You need to install and activete these 3 plugin unless Bus Ticket "
+"Booking with Seat Reservation PRO will not work."
+msgstr ""
+
+#: includes/class-function.php:98
+msgid "Passenger info:"
+msgstr ""
+
+#: includes/class-function.php:98 includes/class-function.php:173
+msgid "Enter Your Name"
+msgstr ""
+
+#: includes/class-function.php:98 includes/class-function.php:181
+msgid "Enter Your Email"
+msgstr ""
+
+#: includes/class-function.php:98 includes/class-function.php:189
+#: includes/class-function.php:190
+msgid "Enter Your Phone"
+msgstr ""
+
+#: includes/class-function.php:98 includes/class-function.php:196
+msgid "Enter you address"
+msgstr ""
+
+#: includes/class-function.php:98 includes/class-function.php:201
+msgid "Gender"
+msgstr ""
+
+#: includes/class-function.php:98 includes/class-function.php:201
+msgid "Please Select"
+msgstr ""
+
+#: includes/class-function.php:98 includes/class-function.php:201
+msgid "Male"
+msgstr ""
+
+#: includes/class-function.php:98 includes/class-function.php:201
+msgid "Female"
+msgstr ""
+
+#: lib/classes/class-pdf.php:86 lib/classes/class-pdf.php:87
+#: lib/classes/class-pdf.php:111
+msgid "Bus_ticket_"
+msgstr ""
+
+#: public/pdf/templates/pdf-templates/flat/template.php:268
+msgid "PIN:"
+msgstr ""
+
+#: public/pdf/templates/pdf-templates/flat/template.php:273
+msgid "Name:"
+msgstr ""
+
+#: public/pdf/templates/pdf-templates/flat/template.php:275
+msgid "Phone:"
+msgstr ""
+
+#: public/pdf/templates/pdf-templates/flat/template.php:281
+msgid "Gender:"
+msgstr ""
+
+#: public/pdf/templates/pdf-templates/flat/template.php:283
+msgid "Email:"
+msgstr ""
+
+#: public/pdf/templates/pdf-templates/flat/template.php:306
+msgid "Address:"
+msgstr ""
+
+#: public/pdf/templates/pdf-templates/flat/template.php:311
+msgid "Journey Date:"
+msgstr ""
+
+#: public/pdf/templates/pdf-templates/flat/template.php:312
+msgid "Time:"
+msgstr ""
+
+#: public/pdf/templates/pdf-templates/flat/template.php:316
+msgid "Boarding:"
+msgstr ""
+
+#: public/pdf/templates/pdf-templates/flat/template.php:317
+msgid "Dropping:"
+msgstr ""
+
+#: public/pdf/templates/pdf-templates/flat/template.php:321
+msgid "Seat:"
+msgstr ""
+
+#: public/pdf/templates/pdf-templates/flat/template.php:322
+msgid "Bus No:"
+msgstr ""
+
+#: public/pdf/templates/pdf-templates/flat/template.php:326
+msgid "Price:"
+msgstr ""
+
+#: public/pdf/templates/pdf-templates/flat/template.php:330
+msgid "Purchase on:"
+msgstr ""
+
+#. Name of the plugin
+msgid "Bus Ticket Booking with Seat Reservation PRO"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"Pro version of Woocommerce Bus Tickets Manager, A Complete Bus Ticketig "
+"System for WordPress & WooCommerce"
+msgstr ""
+
+#. URI of the plugin
+msgid "http://mage-people.com"
+msgstr ""
+
+#. Author of the plugin
+msgid "MagePeople Team"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "http://www.mage-people.com/"
+msgstr ""

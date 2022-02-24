@@ -6,12 +6,17 @@
   "homepage": "https://roots.io/bedrock/",
   "authors": [
     {
-      "name": "Scott Walkinshaw",
+      "name": "Jorge Silva",
+      "email": "jsilvaleonardo1@gmail.com",
+      "homepage": "https://github.com/ijorgesilva"
+    },
+    {
+      "name": "Scott Walkinshaw | Bedrock",
       "email": "scott.walkinshaw@gmail.com",
       "homepage": "https://github.com/swalkinshaw"
     },
     {
-      "name": "Ben Word",
+      "name": "Ben Word | Bedrock",
       "email": "ben@benword.com",
       "homepage": "https://github.com/retlehs"
     }
@@ -39,7 +44,10 @@
     "roots/bedrock-disallow-indexing": "^2.0",
     "roots/wordpress": "5.8.2",
     "roots/wp-config": "1.0.0",
-    "roots/wp-password-bcrypt": "1.1.0"
+    "roots/wp-password-bcrypt": "1.1.0",
+    "wpackagist-plugin/bus-ticket-booking-with-seat-reservation": "3.6",
+    "wpackagist-plugin/woocommerce": "^6.2",
+    "wpackagist-plugin/wordfence": "^7.5"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^3.6.0",
@@ -53,7 +61,21 @@
   "prefer-stable": true,
   "extra": {
     "installer-paths": {
-      "web/app/mu-plugins/{$name}/": ["type:wordpress-muplugin"],
+      "web/app/mu-plugins/{$name}/": [
+        "type:wordpress-muplugin", "wpackagist-plugin/wpackagist-plugin/woocommerce",
+        "type:wordpress-muplugin", "wpackagist-plugin/bus-ticket-booking-with-seat-reservation",
+        "type:wordpress-muplugin", "wpackagist-plugin/clean-image-filenames",
+        "type:wordpress-muplugin", "wpackagist-plugin/duplicate-post",
+        "type:wordpress-muplugin", "wpackagist-plugin/easy-wp-smtp",
+        "type:wordpress-muplugin", "wpackagist-plugin/email-templates",
+        "type:wordpress-muplugin", "wpackagist-plugin/enable-media-replace",
+        "type:wordpress-muplugin", "wpackagist-plugin/imsanity",
+        "type:wordpress-muplugin", "wpackagist-plugin/svg-support",
+        "type:wordpress-muplugin", "wpackagist-plugin/wp-email-login",
+        "type:wordpress-muplugin", "yoast/wordpress-seo",
+        "type:wordpress-muplugin", "wpackagist-plugin/simple-page-ordering",
+        "type:wordpress-muplugin", "valu/wp-graphql-polylang"
+      ],
       "web/app/plugins/{$name}/": ["type:wordpress-plugin"],
       "web/app/themes/{$name}/": ["type:wordpress-theme"]
     },

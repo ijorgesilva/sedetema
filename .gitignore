@@ -7,15 +7,18 @@ web/app/uploads/*
 !web/app/uploads/.gitkeep
 
 ### Plugins ###
-# ACF
+# Bus System
+!web/app/plugins/addon-bus--ticket-booking-with-seat-pro
 # Gravity Forms
 # Misc
 !web/app/mu-plugins/amazon-s3-and-cloudfront-pro
 !web/app/mu-plugins/admin-columns-pro
-
 ### WordPress ###
 web/wp
 web/.htaccess
+
+## Divi Theme
+web/app/et-cache/
 
 ### Logs ###
 *.log

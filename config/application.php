@@ -106,12 +106,51 @@ Config::define('DISALLOW_FILE_MODS', true);
 Config::define('WP_POST_REVISIONS', env('WP_POST_REVISIONS') ?: true);
 
 /**
+ * S3 Assets 
+ * amazon-s3-and-cloudfront-pro
+ * Docs: https://deliciousbrains.com/wp-offload-media/doc/settings-constants/
+ */
+define( 'AS3CF_SETTINGS', serialize( array(
+    'provider' => env('PROVIDER') || 'aws',
+    'access-key-id' => env('S3_ACCESS_KEY_ID'),
+    'secret-access-key' => env('S3_SECRET_ACCESS_KEY'),
+    'bucket' => env('S3_BUCKET'),
+    'copy-to-s3' => env('COPY_TO_S3') || true,
+    'use-yearmonth-folders' => true,
+    'object-versioning' => true,
+    'serve-from-s3' => env('SERVE_FROM_S3') || true,  
+    'force-https' => true,
+    'remove-local-file' => env('REMOVE_LOCAL_FILE') || true, // Remove the local file version once offloaded to bucket
+) ) );
+
+/**
+ * SMTP Configuration
+ * Set the following constants in wp-config.php
+ * These should be added somewhere BEFORE the
+ * constant ABSPATH is defined.
+ */
+Config::define( 'WP_SMTP_HOST', env('SMTP_HOST') );    // The hostname of the mail server | 'smtp.example.com'
+Config::define( 'WP_SMTP_PORT', env('SMTP_PORT') );    // SMTP port number - likely to be 25, 465 or 587 | '25'
+Config::define( 'WP_SMTP_USER', env('SMTP_USER') );    // Username to use for SMTP authentication | 'user@example.com' 
+Config::define( 'WP_SMTP_PASS', env('SMTP_PASS') );    // Password to use for SMTP authentication | 'smtp password'
+Config::define( 'WP_SMTP_SECURE', env('SMTP_SECURE') );// Encryption system to use - ssl or tls | 'tls'
+Config::define( 'WP_SMTP_AUTH', env('SMTP_AUTH') );    // Use SMTP authentication (true|false) | true
+Config::define( 'WP_SMTP_FROM', env('SMTP_FROM') );    // SMTP From email address | 'website@example.com'
+Config::define( 'WP_SMTP_NAME', env('SMTP_NAME') );    // SMTP From name | 'e.g Website Name'
+Config::define( 'WP_SMTP_DEBUG', env('SMTP_DEBUG') );  // for debugging purposes only set to 1 or 2 | 0
+
+/**
  * Debugging Settings
  */
 Config::define('WP_DEBUG_DISPLAY', false);
 Config::define('WP_DEBUG_LOG', false);
 Config::define('SCRIPT_DEBUG', false);
 ini_set('display_errors', '0');
+
+/**
+ * Custom Configurations
+ */
+define( 'WP_DEFAULT_THEME', env('WP_DEFAULT_THEME') ?: 'headless' );
 
 /**
  * Allow WordPress to detect HTTPS when used behind a reverse proxy or a load balancer

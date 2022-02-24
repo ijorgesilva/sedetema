@@ -12,12 +12,19 @@ services:
     restart: always
     volumes:
       - ./:/var/www/html
+      # https://stackoverflow.com/questions/54291859/docker-wordpress-super-slow
+      #- ./wp-content:/app/wp-content
+      # - type: bind
+      #   source: ./wp-content
+      #   target: /app/wp-content
+      #   consistency: cached
     ports:
         - '8090:80'
         - '3000:443'
     depends_on:
         - php
         - db
+
 
   # PHP
   php:
@@ -29,7 +36,7 @@ services:
   # phpmyadmin
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin
+    container_name: phpmyadmin-sedetema
     restart: always
     ports:
       - '8091:80'
