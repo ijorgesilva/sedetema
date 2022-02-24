@@ -1,0 +1,20 @@
+#!/bin/bash
+echo "Installing Dependencies"
+# https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-simple-codecommit.html
+# Install CodeDeploy agent
+# sudo service codedeploy-agent restart
+# sudo service codedeploy-agent status
+# LEP Stack
+# sudo apt-get update && sudo apt-get upgrade -y
+# sudo apt-get install -y nginx php7.4 php7.4-fpm php7.4-cli php7.4-mysql php7.4-curl php7.4-json php-simplexml php-mbstring php-xml unzip
+# sudo apt install -y unzip
+#sudo systemctl start nginx
+#sudo systemctl enable nginx
+#sudo systemctl start php7.4-fpm
+#sudo systemctl enable php7.4-fpm
+# TODO: Create Nginx Site https://www.rosehosting.com/blog/how-to-install-php-7-4-with-nginx-on-ubuntu-20-04/
+## Install Composer
+# php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+# php composer-setup.php
+# php -r "unlink('composer-setup.php');"
+# sudo mv /home/ubuntu/composer.phar /usr/bin/composer

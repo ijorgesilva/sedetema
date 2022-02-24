@@ -1,0 +1,59 @@
+version: '3'
+services:
+
+  # NGinx
+  # Source: https://gist.github.com/bradtraversy/faa8de544c62eef3f31de406982f1d42
+  # Source: https://pawelgrzybek.com/configure-a-local-wordpress-development-using-docker/
+  # Source: https://medium.com/@emilpriver/docker-docker-compose-wordpress-bedrock-9b840ef0b981
+  nginx:
+    build: ./scripts/nginx
+    environment:
+        - NGINX_HOST=${NGINX_HOST}
+    restart: always
+    volumes:
+      - ./:/var/www/html
+    ports:
+        - '8090:80'
+        - '3000:443'
+    depends_on:
+        - php
+        - db
+
+  # PHP
+  php:
+    build: ./scripts/php
+    restart: always
+    volumes:
+      - ./:/var/www/html
+
+  # phpmyadmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - '8091:80'
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=${MYSQL_HOST}
+      - UPLOAD_LIMIT=64M
+    depends_on:
+      - db
+
+  # Database
+  db:
+    image: mysql:${MYSQL_VERSION}
+    container_name: ${MYSQL_HOST}
+    volumes:
+      - './data/db/mysql:/var/lib/mysql'
+    restart: always
+    ports:
+        - '8989:3306'
+    environment:
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+
+volumes:
+  db_data:

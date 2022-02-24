@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Exclude flags --exclude "htdocs/media/" --exclude ".*"
+echo "Backup previous release"
+rsync --delete-before --verbose --archive /home/ubuntu/html/ /home/ubuntu/html-previous/ > /var/log/deploy.log
+
+echo "Installing Composer Dependencies"
+cd /home/ubuntu/release/
+composer install
+
+echo "Deploying from release/ to html/"
+rsync --delete-before --verbose --archive /home/ubuntu/release/ /home/ubuntu/html/ > /var/log/deploy.log
+
+echo "Fixing permissions of newly created folders"
+cd /home/ubuntu/
+sudo chown -R www-data:www-data html/
+sudo chmod -R 755 html/

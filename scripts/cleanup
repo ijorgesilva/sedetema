@@ -1,0 +1,19 @@
+#!/bin/bash
+#echo "Cleaning up"
+# sudo rm -rf /opt/codedeploy-agent/deployment-root/deployment-instructions/*-cleanup
+
+# I want to make sure that the directory is clean and has nothing left over from
+# previous deployments. The servers auto scale so the directory may or may not
+# exist.
+
+echo "Cleaning up previous html-previous"
+if [ -d /home/ubuntu/html-previous ]; then
+   rm -rf /home/ubuntu/html-previous
+fi
+mkdir -vp /home/ubuntu/html-previous
+
+echo "Cleaning up last release"
+if [ -d /home/ubuntu/release ]; then
+   rm -rf /home/ubuntu/release
+fi
+mkdir -vp /home/ubuntu/release
