@@ -72,7 +72,6 @@
   "extra": {
     "installer-paths": {
       "web/app/mu-plugins/{$name}/": [
-        "type:wordpress-muplugin", "wpackagist-plugin/woocommerce",
         "type:wordpress-muplugin", "wpackagist-plugin/clean-image-filenames",
         "type:wordpress-muplugin", "wpackagist-plugin/duplicate-post",
         "type:wordpress-muplugin", "wpackagist-plugin/easy-wp-smtp",
@@ -81,11 +80,12 @@
         "type:wordpress-muplugin", "wpackagist-plugin/imsanity",
         "type:wordpress-muplugin", "wpackagist-plugin/svg-support",
         "type:wordpress-muplugin", "wpackagist-plugin/wp-email-login",
-        "type:wordpress-muplugin", "wpackagist-plugin/wordpress-seo",
         "type:wordpress-muplugin", "wpackagist-plugin/simple-page-ordering"
       ],
       "web/app/plugins/{$name}/": [
-          "type:wordpress-plugin", "wpackagist-plugin/bus-ticket-booking-with-seat-reservation"
+          "type:wordpress-plugin", "wpackagist-plugin/bus-ticket-booking-with-seat-reservation",
+          "type:wordpress-plugin", "wpackagist-plugin/woocommerce",
+          "type:wordpress-plugin", "wpackagist-plugin/wordpress-seo"
         ],
       "web/app/themes/{$name}/": ["type:wordpress-theme"]
     },
