@@ -20,6 +20,9 @@ web/.htaccess
 ## Divi Theme
 web/app/et-cache/
 
+### Wordfence ###
+web/app/wflogs/
+
 ### Logs ###
 *.log
 
