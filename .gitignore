@@ -9,6 +9,7 @@ web/app/uploads/*
 ### Plugins ###
 # Bus System
 !web/app/plugins/addon-bus--ticket-booking-with-seat-pro
+!web/app/plugins/magepeople-pdf-support-master
 # Gravity Forms
 # Misc
 !web/app/mu-plugins/amazon-s3-and-cloudfront-pro
