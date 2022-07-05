@@ -291,7 +291,7 @@ if(isset($_GET['bus_start_route']) && ($_GET['bus_end_route']) && ($_GET['j_date
 			<span class='seat-left'><?php echo $available_seat; ?> Seat Left</span>
 		</div>
 		<div class="bus-name" style="text-align: right">
-			<button id="view_panel_<?php echo get_the_id().$wbtmmain->wbtm_make_id($date); ?>">View Seats</button>
+			<button id="view_panel_<?php echo get_the_id().$wbtmmain->wbtm_make_id($date); ?>"><?php _e('View Seats','addon-bus--ticket-booking-with-seat-pro'); ?></button>
 		</div>
 	</div>
 	<div style='display: none;' class="admin-bus-details" id="admin-bus-details<?php echo get_the_id().$wbtmmain->wbtm_make_id($date); ?>">

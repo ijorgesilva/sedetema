@@ -4,7 +4,7 @@ add_action('admin_menu', 'wbtm_bus_report_menu');
 
 function wbtm_bus_report_menu()
 {
-    add_submenu_page(null, __('Report', 'addon-bus--ticket-booking-with-seat-pro'), __('Report', 'wbtm-menu'), 'manage_options', 'bus_report', 'wbtm_bus_report');
+    add_submenu_page(null, __('Report', 'addon-bus--ticket-booking-with-seat-pro'), __('Report', 'addon-bus--ticket-booking-with-seat-pro'), 'manage_options', 'bus_report', 'wbtm_bus_report');
 }
 
 function wbtm_bus_report() {
@@ -90,15 +90,15 @@ function wbtm_bus_report() {
     <div class="wbtm_seat_status_hint">
         <div class="wbtm_seat_hint_item wbtm_seat_free">
             <span></span>
-            <span>Available</span>
+            <span><?php _e('Available', 'addon-bus--ticket-booking-with-seat-pro') ?></span>
         </div>
         <div class="wbtm_seat_hint_item wbtm_seat_booked">
             <span></span>
-            <span>Booked</span>
+            <span><?php _e('Booked', 'addon-bus--ticket-booking-with-seat-pro') ?></span>
         </div>
         <div class="wbtm_seat_hint_item wbtm_seat_sold">
             <span></span>
-            <span>Sold</span>
+            <span><?php _e('Sold', 'addon-bus--ticket-booking-with-seat-pro') ?></span>
         </div>
     </div>
     <?php endif; ?>
@@ -113,13 +113,13 @@ function wbtm_bus_report() {
                 </div>
             </div>
             <div>
-                <strong>Type</strong> : <span><?php echo get_the_terms($bus_id, 'wbtm_bus_cat') ? get_the_terms($bus_id, 'wbtm_bus_cat')[0]->name : '' ?></span>
+                <strong><?php _e('Type', 'addon-bus--ticket-booking-with-seat-pro') ?></strong> : <span><?php echo get_the_terms($bus_id, 'wbtm_bus_cat') ? get_the_terms($bus_id, 'wbtm_bus_cat')[0]->name : '' ?></span>
             </div>
             <!-- <div>
                 <strong>Seat Available</strong> : <span><?php //echo wbtm_bus_sold_seat($bus_id, false) . ' / ' . mage_bus_total_seat(); ?></span>
             </div> -->
             <div>
-                <strong>Driver Position</strong> : <span><?php echo get_post_meta($bus_id, 'driver_seat_position', true) ?></span>
+                <strong><?php _e('Driver Position', 'addon-bus--ticket-booking-with-seat-pro') ?></strong> : <span><?php echo get_post_meta($bus_id, 'driver_seat_position', true) ?></span>
             </div>
         </div>
         <div class="wbtm_bus_lower_deck">
@@ -150,7 +150,7 @@ function wbtm_bus_report() {
                     </div>
                     <?php if(!empty($seats_rows_upper)) : ?>
                         <div class="mage_seat_list" data-bus-id="<?php echo $bus_id; ?>" data-j-date="<?php echo $j_date; ?>">
-                            <p class="wbtm_deck_title">Upper Deck</p>
+                            <p class="wbtm_deck_title"><?php _e('Upper Deck', 'addon-bus--ticket-booking-with-seat-pro') ?></p>
                             <?php
                                 $action_class = ($j_date ? 'mage_see_seat_detail' : null);
                                 foreach ($seats_rows_upper as $seat) {

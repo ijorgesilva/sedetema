@@ -23,7 +23,7 @@ if (!class_exists('WbbmReport')) {
             $this->currency = '$';
             $this->this_page = get_admin_url() . 'edit.php?post_type=' . $this->post_type . '&page=' . $this->post_slug;
 
-            add_action('admin_menu', array($this, 'wbbm_report_page'));
+            add_action('admin_menu', array($this, 'wbbm_report_page'), 90);
 
             $this->page_for = isset($_GET['page_for']) ? $_GET['page_for'] : 'sales';
 
@@ -44,7 +44,7 @@ if (!class_exists('WbbmReport')) {
 
         public function wbbm_report_page()
         {
-            add_submenu_page('edit.php?post_type=' . $this->post_type, $this->lang('Reports'), $this->lang('Reports'), 'manage_options', $this->post_slug, array($this, 'wbbm_reports_entry_point'));
+            add_submenu_page('edit.php?post_type=' . $this->post_type, __('Reports','addon-bus--ticket-booking-with-seat-pro'), __('Reports','addon-bus--ticket-booking-with-seat-pro'), 'manage_options', $this->post_slug, array($this, 'wbbm_reports_entry_point'));
         }
 
         /*
@@ -84,7 +84,7 @@ if (!class_exists('WbbmReport')) {
         */
         public function section_heading($heading)
         {
-            echo '<h1>' . strtoupper($this->lang($heading)) . '</h1>';
+            echo '<h1>' . strtoupper($heading) . '</h1>';
         }
 
         public function current_tab()
@@ -95,7 +95,7 @@ if (!class_exists('WbbmReport')) {
         public function wbtm_tab_assign_callback()
         {
             unset($_SESSION['filter_where']);
-            $tab = $_POST['tab_no'];
+            $tab = isset($_POST['tab_no']) ? $_POST['tab_no'] : null;
             if ($tab) {
                 $_SESSION['current_tab'] = $tab;
             } else {
@@ -170,28 +170,28 @@ if (!class_exists('WbbmReport')) {
             ?>
             <ul>
                 <li class="<?php echo($filter_active == 'last_year' ? 'filter_active' : '') ?>"><a
-                            href="<?php echo $this->this_page . '&filter_by=last_year'; ?>"><?php echo $this->lang('Last Year'); ?></a>
+                            href="<?php echo $this->this_page . '&filter_by=last_year'; ?>"><?php  _e('Last Year','addon-bus--ticket-booking-with-seat-pro'); ?></a>
                 </li>
                 <li class="<?php echo($filter_active == 'this_year' ? 'filter_active' : '') ?>"><a
-                            href="<?php echo $this->this_page . '&filter_by=this_year'; ?>"><?php echo $this->lang('This Year'); ?></a>
+                            href="<?php echo $this->this_page . '&filter_by=this_year'; ?>"><?php  _e('This Year','addon-bus--ticket-booking-with-seat-pro'); ?></a>
                 </li>
                 <li class="<?php echo($filter_active == 'last_month' ? 'filter_active' : '') ?>"><a
-                            href="<?php echo $this->this_page . '&filter_by=last_month'; ?>"><?php echo $this->lang('Last Month'); ?></a>
+                            href="<?php echo $this->this_page . '&filter_by=last_month'; ?>"><?php  _e('Last Month','addon-bus--ticket-booking-with-seat-pro'); ?></a>
                 </li>
                 <li class="<?php echo($filter_active == 'this_month' ? 'filter_active' : '') ?>"><a
-                            href="<?php echo $this->this_page . '&filter_by=this_month'; ?>"><?php echo $this->lang('This Month'); ?></a>
+                            href="<?php echo $this->this_page . '&filter_by=this_month'; ?>"><?php  _e('This Month','addon-bus--ticket-booking-with-seat-pro'); ?></a>
                 </li>
                 <li class="<?php echo($filter_active == 'last_week' ? 'filter_active' : '') ?>"><a
-                            href="<?php echo $this->this_page . '&filter_by=last_week'; ?>"><?php echo $this->lang('Last Week'); ?></a>
+                            href="<?php echo $this->this_page . '&filter_by=last_week'; ?>"><?php  _e('Last Week','addon-bus--ticket-booking-with-seat-pro'); ?></a>
                 </li>
             </ul>
             <?php
-            echo '<a href="' . $this->this_page . '" class="wbbm_btn_new reset-filter">' . $this->lang('Reset all filter') . '</a>';
+            echo '<a href="' . $this->this_page . '" class="wbbm_btn_new reset-filter">' . __('Reset all filter','addon-bus--ticket-booking-with-seat-pro') . '</a>';
             $this->end_div(); // Top End
 
             $this->start_div('wbbm_page_filter_bottom'); // Bottom Start
             ?>
-            <label class="sec-label"><?php echo $this->lang('Filter By') ?></label>
+            <label class="sec-label"><?php  _e('Filter By','addon-bus--ticket-booking-with-seat-pro') ?></label>
             <form action="<?php echo get_admin_url(); ?>edit.php?post_type=wbbm_bus&page=wbbm-reports" method="GET">
                 <input type="hidden" name="post_type" value="<?php echo $this->post_type ?>">
                 <input type="hidden" name="page" value="<?php echo $this->post_slug ?>">
@@ -200,7 +200,7 @@ if (!class_exists('WbbmReport')) {
                     <?php $this->get_filter_field($from_date, $to_date); ?>
 
                     <input type="submit" class="wbbm_btn_new" name="submit"
-                           value="<?php echo $this->lang('Search'); ?>">
+                           value="<?php  _e('Search','addon-bus--ticket-booking-with-seat-pro'); ?>">
                 </div>
             </form>
             <?php
@@ -235,7 +235,7 @@ if (!class_exists('WbbmReport')) {
         protected function content_tab_one()
         {
             // Heading
-            $this->section_heading('Sells Details Report');
+            $this->section_heading(__('Sells Details Report','addon-bus--ticket-booking-with-seat-pro'));
             // Heading END
 
             // Filter
@@ -255,7 +255,7 @@ if (!class_exists('WbbmReport')) {
                         <input type="hidden" name="page" value="<?php echo $this->post_slug ?>">
                         <input style="background: #47a96e;font-weight: 700;" class="wbbm_btn_new" type="submit"
                                name="wbbm_csv_export"
-                               value="Export CSV">
+                               value="<?php _e('Export CSV','addon-bus--ticket-booking-with-seat-pro'); ?>">
                     </form>
                 </div>
             <?php endif;
@@ -285,7 +285,7 @@ if (!class_exists('WbbmReport')) {
                                 break;
                         }
                     } else {
-                        printf('<p class="wbbm_no_data_found">%s</p>', (isset($_GET['submit']) ? $this->lang("No data found!") : ""));
+                        printf('<p class="wbbm_no_data_found">%s</p>', (isset($_GET['submit']) ? __("No data found!",'addon-bus--ticket-booking-with-seat-pro') : ""));
                     }
                     ?>
                     </tbody>
@@ -299,7 +299,7 @@ if (!class_exists('WbbmReport')) {
         protected function content_tab_three()
         {
             // Heading
-            $this->section_heading('Order wise Details Report');
+            $this->section_heading(__('Order wise Details Report','addon-bus--ticket-booking-with-seat-pro'));
             // Heading END
 
             // Filter
@@ -328,95 +328,143 @@ if (!class_exists('WbbmReport')) {
             );
 
             $res = new WP_Query($args);
+            $total_order = 0;
+            $total_seat = 0;
+            $total_price = 0;
 
-            if (isset($_SESSION['filter_text'])) : ?>
-                <div style="text-align:right">
-                    <!-- <button id="wbbm_export_pdf" class="wbbm_btn_new">PDF Download</button> -->
 
-                    <form action="" method="GET">
-                        <!-- <button id="wbbm_export_csv" class="wbbm_btn_new">Export CSV</button> -->
-                        <input type="hidden" name="post_type" value="<?php echo $this->post_type ?>">
-                        <input type="hidden" name="page" value="<?php echo $this->post_slug ?>">
-                        <input style="background: #47a96e;font-weight: 700;" class="wbbm_btn_new" type="submit"
-                               name="wbbm_order_wise_csv_export"
-                               value="&#8595; Export CSV">
-                    </form>
-                </div>
-            <?php endif;
+            // Start
+            $data_html = '';
+            if ($res && $filter_where) :
+                $all_orders = [];
+                while ($res->have_posts()) {
+                    $res->the_post();
+                    $all_orders[] = array(
+                        'id' => get_post_meta(get_the_ID(), 'wbtm_order_id', true),
+                        'amount' => get_post_meta(get_the_ID(), 'wbtm_bus_fare', true),
+                        'booking_id' => get_the_ID()
+                    );
+                }
+                wp_reset_postdata();
+
+                $i = 0;
+                while ($res->have_posts()) : $res->the_post();
+                    $id = get_the_ID();
+                    $order = wc_get_order($this->wbbm_post_meta($id, 'wbtm_order_id'));
+
+                    $current_order = $this->wbbm_post_meta($id, 'wbtm_order_id');
+                    $prev_order = (isset($prev_order) ? $prev_order : $current_order);
+
+                    $amount = 0;
+                    $count = 0;
+                    $j = 0;
+                    $seat = array();
+
+                    if ($current_order != $prev_order || $i == 0) {
+                        foreach ($all_orders as $o) {
+                            if ($current_order == $o['id']) {
+                                $amount += (float)$o['amount'];
+                                $count += $j + 1;
+                                $seat[] = $this->wbbm_post_meta($o['booking_id'], 'wbtm_seat');
+                            }
+                        }
+
+                        // Extra Service Price
+                        $get_es_prices = get_post_meta($current_order, '_extra_services', true);
+                        $es_price = 0;
+                        if ($get_es_prices) {
+                            foreach ($get_es_prices as $price) {
+                                $es_price += $price['qty'] * $price['price'];
+                            }
+                        }
+
+                        $data_html .= '<tr>';
+                        $data_html .= '<td>#' . $current_order . '</td>';
+                        $data_html .= '<td>' . ($order ? $order->get_formatted_billing_full_name() : "") . '</td>';
+                        $data_html .= '<td>' . $this->wbbm_post_meta($id, 'wbtm_booking_date') . '</td>';
+                        $data_html .= '<td>' . $this->wbbm_post_meta($id, 'wbtm_boarding_point') . '</td>';
+                        $data_html .= '<td>' . $this->wbbm_post_meta($id, 'wbtm_droping_point') . '</td>';
+                        $data_html .= '<td>' . $count . '</td>';
+                        $data_html .= '<td>' . ($seat ? implode(', ', $seat) : '') . '</td>';
+                        $data_html .= '<td>' . wc_price($amount) . '</td>';
+                        $data_html .= '<td>' . ($es_price ? wc_price($es_price) : null) . '</td>';
+                        $data_html .= '<td>' . wc_price($amount + $es_price) . '</td>';
+                        $data_html .= '<td>' . ($order ? $order->get_status() : "") . '</td>';
+                        $data_html .= '<td class="wbbm_order_detail--report" data-order-id="' . $current_order . '"><img class="wbbm_report_loading" src="' . plugin_dir_url(__FILE__) . '../' . 'img/loading.gif' . '"/> <div class="action-btn-wrap"><button class="wbbm_detail_inside">' . __("Details Inside",'addon-bus--ticket-booking-with-seat-pro') . '</button></div></td>';
+                        $data_html .= '</tr>';
+
+                        $total_order++;
+                        $total_seat += $count;
+                        $total_price += $amount + $es_price;
+                    }
+
+                    $j++;
+
+                    $prev_order = $current_order;
+                    $i++;
+                endwhile; endif;
+            wp_reset_postdata();
+            // END
             ?>
+
 
             <div id="wbbm_report_table_main">
                 <?php echo isset($_SESSION['filter_text']) ? '<p class="wbbm-report-heading">' . $_SESSION['filter_text'] . '</p>' : ''; ?>
+                <div class="wbbm-table-top">
+                    <div class="left">
+                        <div class="item">
+                            <strong><?php  _e('Number of Order','addon-bus--ticket-booking-with-seat-pro') ?>:</strong>
+                            <span><?php echo $total_order; ?></span>
+                        </div>
+                        <div class="item">
+                            <strong><?php  _e('Total Ticket','addon-bus--ticket-booking-with-seat-pro') ?>:</strong>
+                            <span><?php echo $total_seat; ?></span>
+                        </div>
+                        <div class="item">
+                            <strong><?php  _e('Sold Amount','addon-bus--ticket-booking-with-seat-pro') ?>:</strong>
+                            <span><?php echo wc_price($total_price); ?></span>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <?php
+                        if (isset($_SESSION['filter_text'])) : ?>
+                            <div style="text-align:right">
+                                <!-- <button id="wbbm_export_pdf" class="wbbm_btn_new">PDF Download</button> -->
+
+                                <form action="" method="GET">
+                                    <!-- <button id="wbbm_export_csv" class="wbbm_btn_new">Export CSV</button> -->
+                                    <input type="hidden" name="post_type" value="<?php echo $this->post_type ?>">
+                                    <input type="hidden" name="page" value="<?php echo $this->post_slug ?>">
+                                    <input style="background: #47a96e;font-weight: 700;" class="wbbm_btn_new"
+                                           type="submit"
+                                           name="wbbm_order_wise_csv_export"
+                                           value="&#8595; Export CSV">
+                                </form>
+                            </div>
+                        <?php endif;
+                        ?>
+                    </div>
+                </div>
                 <table class="wbbm-main-table-order-wise">
                     <thead>
                     <tr>
-                        <th>Order no</th>
-                        <th>Billing Name</th>
-                        <th>Booking Date</th>
-                        <th>Boarding</th>
-                        <th>Dropping</th>
-                        <th>Qty</th>
-                        <th>Seat</th>
-                        <th>Price</th>
-                        <th>Status</th>
-                        <th>Action</th>
+                        <th><?php  _e('Order no','addon-bus--ticket-booking-with-seat-pro') ?></th>
+                        <th><?php  _e('Billing Name','addon-bus--ticket-booking-with-seat-pro') ?></th>
+                        <th><?php  _e('Booking Date','addon-bus--ticket-booking-with-seat-pro') ?></th>
+                        <th><?php  _e('Boarding','addon-bus--ticket-booking-with-seat-pro') ?></th>
+                        <th><?php  _e('Dropping','addon-bus--ticket-booking-with-seat-pro') ?></th>
+                        <th><?php  _e('Qty','addon-bus--ticket-booking-with-seat-pro') ?></th>
+                        <th><?php  _e('Seat','addon-bus--ticket-booking-with-seat-pro') ?></th>
+                        <th><?php  _e('Seat Price','addon-bus--ticket-booking-with-seat-pro') ?></th>
+                        <th><?php  _e('Extra Service Price','addon-bus--ticket-booking-with-seat-pro') ?></th>
+                        <th><?php  _e('Total Price','addon-bus--ticket-booking-with-seat-pro') ?></th>
+                        <th><?php  _e('Status','addon-bus--ticket-booking-with-seat-pro') ?></th>
+                        <th><?php  _e('Action','addon-bus--ticket-booking-with-seat-pro') ?></th>
                     </tr>
                     </thead>
                     <tbody>
-                    <?php if ($res && $filter_where) :
-                        $all_orders = [];
-                        while ($res->have_posts()) {
-                            $res->the_post();
-                            $all_orders[] = array(
-                                'id' => get_post_meta(get_the_ID(), 'wbtm_order_id', true),
-                                'amount' => get_post_meta(get_the_ID(), 'wbtm_bus_fare', true),
-                                'booking_id' => get_the_ID()
-                            );
-                        }
-                        wp_reset_postdata();
-
-                        $i = 0;
-                        while ($res->have_posts()) : $res->the_post();
-                            $id = get_the_ID();
-                            $order = wc_get_order($this->wbbm_post_meta($id, 'wbtm_order_id'));
-
-                            $current_order = $this->wbbm_post_meta($id, 'wbtm_order_id');
-                            $prev_order = (isset($prev_order) ? $prev_order : $current_order);
-
-                            $amount = 0;
-                            $count = 0;
-                            $j = 0;
-                            $seat = array();
-                            if ($current_order != $prev_order || $i == 0) {
-                                foreach ($all_orders as $o) {
-                                    if ($current_order == $o['id']) {
-                                        $amount += (float)$o['amount'];
-                                        $count  += $j+1;
-                                        $seat[] = $this->wbbm_post_meta($o['booking_id'], 'wbtm_seat');
-                                    }
-                                }
-
-                                echo '<tr>';
-                                echo '<td>#' . $current_order . '</td>';
-                                echo '<td>' . ($order ? $order->get_formatted_billing_full_name() : ""). '</td>';
-                                echo '<td>' . $this->wbbm_post_meta($id, 'wbtm_booking_date') . '</td>';
-                                echo '<td>' . $this->wbbm_post_meta($id, 'wbtm_boarding_point') . '</td>';
-                                echo '<td>' . $this->wbbm_post_meta($id, 'wbtm_droping_point') . '</td>';
-                                echo '<td>' . $count . '</td>';
-                                echo '<td>' . ($seat ? implode(', ', $seat) : '') . '</td>';
-                                echo '<td>' . $this->currency . $amount . '</td>';
-                                echo '<td>' . ($order ? $order->get_status() : "") . '</td>';
-                                echo '<td class="wbbm_order_detail--report" data-order-id="' . $current_order . '"><img class="wbbm_report_loading" src="' . plugin_dir_url(__FILE__) . '../' . 'img/loading.gif' . '"/> <div class="action-btn-wrap"><button class="wbbm_detail_inside">' . $this->lang("Details Inside") . '</button></div></td>';
-                                echo '</tr>';
-                            }
-
-                            $j++;
-
-                            $prev_order = $current_order;
-                            $i++;
-                        endwhile; endif;
-                    wp_reset_postdata();
-                    ?>
+                    <!-- Output Data -->
+                    <?php echo $data_html; ?>
                     </tbody>
                 </table>
             </div>
@@ -459,13 +507,34 @@ if (!class_exists('WbbmReport')) {
                 'hide_empty' => false,
             ));
 
+            // All users
+            $users = get_users();
+            // echo '<pre>'; print_r($users); die;
+
             $buses = new WP_Query($this->buses());
             $count = $buses->found_posts;
             if ($count > 0) : ?>
                 <div class="wbbm-field-group">
-                    <label for="bus_id"><?php echo $this->lang('By Bus') ?></label>
+                    <label for="user_id"><?php  _e('By Seller','addon-bus--ticket-booking-with-seat-pro') ?></label>
+                    <select class="<?php echo($bus_id ? $filter_active : '') ?>" name="user_id" id="user_id">
+                        <option value=""><?php  _e('Select Seller','addon-bus--ticket-booking-with-seat-pro') ?></option>
+                        <?php foreach ($users as $user) : ?>
+                            <option value="<?php echo $user->ID; ?>" <?php
+                            if (isset($_GET['user_id'])) {
+                                if ($user->ID == $_GET['user_id']) {
+                                    echo 'selected';
+                                }
+                            }
+                            ?>>
+                                <?php echo ucfirst($user->data->display_name); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="wbbm-field-group">
+                    <label for="bus_id"><?php  _e('By Bus','addon-bus--ticket-booking-with-seat-pro') ?></label>
                     <select class="<?php echo($bus_id ? $filter_active : '') ?>" name="bus_id" id="bus_id">
-                        <option value=""><?php echo $this->lang('Select Bus') ?></option>
+                        <option value=""><?php  _e('Select Bus','addon-bus--ticket-booking-with-seat-pro') ?></option>
                         <?php while ($buses->have_posts()) : $buses->the_post(); ?>
                             <option value="<?php echo get_the_id() ?>" <?php
                             if (isset($_GET['bus_id'])) {
@@ -482,10 +551,10 @@ if (!class_exists('WbbmReport')) {
             <?php
             if ($routes) : ?>
                 <div class="wbbm-field-group">
-                    <label for="boarding_point"><?php echo $this->lang('Boarding Point') ?></label>
+                    <label for="boarding_point"><?php  _e('Boarding Point','addon-bus--ticket-booking-with-seat-pro') ?></label>
                     <select name="boarding_point" id="boarding_point"
                             class="<?php echo($boarding_point ? $filter_active : '') ?>">
-                        <option value=""><?php echo $this->lang('Boarding Point') ?></option>
+                        <option value=""><?php  _e('Boarding Point','addon-bus--ticket-booking-with-seat-pro') ?></option>
                         <?php foreach ($routes as $route) : ?>
                             <option value="<?php echo $route->name ?>" <?php
                             if (isset($_GET['boarding_point'])) {
@@ -499,10 +568,10 @@ if (!class_exists('WbbmReport')) {
                     </select>
                 </div>
                 <div class="wbbm-field-group">
-                    <label for="to_date"><?php echo $this->lang('Dropping Point') ?></label>
+                    <label for="to_date"><?php  _e('Dropping Point','addon-bus--ticket-booking-with-seat-pro') ?></label>
                     <select name="dropping_point" id="dropping_point"
                             class="<?php echo($dropping_point ? $filter_active : '') ?>">
-                        <option value=""><?php echo $this->lang('Dropping Point') ?></option>
+                        <option value=""><?php  _e('Dropping Point','addon-bus--ticket-booking-with-seat-pro') ?></option>
                         <?php foreach ($routes as $route) : ?>
                             <option value="<?php echo $route->name ?>" <?php
                             if (isset($_GET['dropping_point'])) {
@@ -517,14 +586,15 @@ if (!class_exists('WbbmReport')) {
                 </div>
             <?php endif; ?>
             <div class="wbbm-field-group">
-                <label for="<?php echo $fd ?>"><?php echo $this->lang('From Date') ?></label>
-                <input class="from_date <?php echo($from_date ? $filter_active : '') ?>" type="text" id="<?php echo $fd ?>"
+                <label for="<?php echo $fd ?>"><?php  _e('From Date','addon-bus--ticket-booking-with-seat-pro') ?></label>
+                <input class="from_date <?php echo($from_date ? $filter_active : '') ?>" type="text"
+                       id="<?php echo $fd ?>"
                        name="from_date"
                        value="<?php echo isset($_GET['from_date']) ? $_GET['from_date'] : '' ?>"
                        placeholder="yyyy-mm-dd">
             </div>
             <div class="wbbm-field-group">
-                <label for="<?php echo $td ?>"><?php echo $this->lang('To Date') ?></label>
+                <label for="<?php echo $td ?>"><?php  _e('To Date','addon-bus--ticket-booking-with-seat-pro') ?></label>
                 <input class="to_date <?php echo($to_date ? $filter_active : '') ?>" type="text" id="<?php echo $td ?>"
                        name="to_date"
                        value="<?php echo isset($_GET['to_date']) ? $_GET['to_date'] : '' ?>" placeholder="yyyy-mm-dd">
@@ -548,7 +618,7 @@ if (!class_exists('WbbmReport')) {
                     $html .= '<td>' . get_post_meta($id, 'wbtm_bus_no', true) . '</td>';
                     $html .= '<td>' . get_the_title($id) . '</td>';
                     $html .= '<td>' . $this->currency . number_format($total, 2) . '</td>';
-                    $html .= '<td class="wbbm_bus_detail--report" data-bus-id="' . $id . '"><img class="wbbm_report_loading" src="' . plugin_dir_url(__FILE__) . '../' . 'img/loading.gif' . '"/> <div class="action-btn-wrap"><button class="wbbm_detail_inside">' . $this->lang("Details Inside") . '</button> <form action="" method="GET"><input type="hidden" name="post_type" value="' . $this->post_type . '"><input type="hidden" name="page" value="' . $this->post_slug . '"><input type="hidden" name="detail_bus_id" value="' . $id . '"><button type="submit" name="wbbm_detail_export_csv">' . $this->lang("Export Csv") . '</button></form></div></td>';
+                    $html .= '<td class="wbbm_bus_detail--report" data-bus-id="' . $id . '"><img class="wbbm_report_loading" src="' . plugin_dir_url(__FILE__) . '../' . 'img/loading.gif' . '"/> <div class="action-btn-wrap"><button class="wbbm_detail_inside">' . __("Details Inside",'addon-bus--ticket-booking-with-seat-pro') . '</button> <form action="" method="GET"><input type="hidden" name="post_type" value="' . $this->post_type . '"><input type="hidden" name="page" value="' . $this->post_slug . '"><input type="hidden" name="detail_bus_id" value="' . $id . '"><button type="submit" name="wbbm_detail_export_csv">' . __("Export Csv",'addon-bus--ticket-booking-with-seat-pro') . '</button></form></div></td>';
                     $html .= '</tr>';
 
                     $t += $total;
@@ -556,13 +626,13 @@ if (!class_exists('WbbmReport')) {
                 }
                 // Grand total row
                 $html .= '<tr>';
-                $html .= '<td colspan="2">' . $this->lang('Grand Total') . '</td>';
+                $html .= '<td colspan="2">' . __('Grand Total','addon-bus--ticket-booking-with-seat-pro') . '</td>';
                 $html .= '<td colspan="2">' . $this->currency . number_format($t, 2) . '</td>';
                 $html .= '</tr>';
 
             } else {
                 $html .= '<tr>';
-                $html .= '<td colspan="2">' . $this->lang('Grand Total:') . '</td>';
+                $html .= '<td colspan="2">' . __('Grand Total:','addon-bus--ticket-booking-with-seat-pro') . '</td>';
                 $html .= '<td colspan="2">' . $this->currency . '0</td>';
                 $html .= '</tr>';
             }
@@ -570,10 +640,10 @@ if (!class_exists('WbbmReport')) {
 
             return array(
                 'head' => array(
-                    $this->lang('Coach No'),
-                    $this->lang('Bus Name'),
-                    $this->lang('Amount'),
-                    $this->lang('Action'),
+                    __('Coach No','addon-bus--ticket-booking-with-seat-pro'),
+                    __('Bus Name','addon-bus--ticket-booking-with-seat-pro'),
+                    __('Amount','addon-bus--ticket-booking-with-seat-pro'),
+                    __('Action','addon-bus--ticket-booking-with-seat-pro'),
                 ),
                 'body' => $html
             );
@@ -594,6 +664,7 @@ if (!class_exists('WbbmReport')) {
             $from_date = isset($query_string['from_date']) ? $query_string['from_date'] : '';
             $to_date = isset($query_string['to_date']) ? $query_string['to_date'] : '';
             $bus_id = isset($query_string['bus_id']) ? $query_string['bus_id'] : '';
+            $user_id = isset($query_string['user_id']) ? $query_string['user_id'] : '';
             $boarding_point = isset($query_string['boarding_point']) ? $query_string['boarding_point'] : '';
             $dropping_point = isset($query_string['dropping_point']) ? $query_string['dropping_point'] : '';
 
@@ -633,6 +704,28 @@ if (!class_exists('WbbmReport')) {
                 $filter_text = 'From ' . date('Y-m-d', strtotime($f_date)) . ' To ' . date('Y-m-d', strtotime($t_date));
             }
 
+            if ($user_id != '') {
+                $query_where .= " AND bus_id = '$user_id'";
+
+                if (!empty($filter_meta_query)) {
+                    array_push($filter_meta_query,
+                        array(
+                            'key' => 'wbtm_user_id',
+                            'compare' => '=',
+                            'value' => $user_id
+                        )
+                    );
+                } else {
+                    $filter_meta_query[] = array(
+                        'key' => 'wbtm_user_id',
+                        'compare' => '=',
+                        'value' => $user_id
+                    );
+                }
+
+                $filter_text .= ' Sales by <span style="text-decoration: underline;">' . ucfirst(get_userdata($user_id)->data->display_name) . '</span>';
+            }
+
             if ($bus_id != '') {
                 $query_where .= " AND bus_id = '$bus_id'";
 
@@ -652,7 +745,7 @@ if (!class_exists('WbbmReport')) {
                     );
                 }
 
-                $filter_text .= ' Under ' . get_the_title($bus_id);
+                $filter_text .= ' Under <span style="text-decoration: underline;">' . get_the_title($bus_id) . '</span>';
             }
 
             if ($boarding_point != '') {
@@ -694,7 +787,8 @@ if (!class_exists('WbbmReport')) {
             }
 
             if (!empty($filter_meta_query)) {
-                $_SESSION['filter_text'] = $this->lang('Showing Data') . ' ' . $filter_text;
+                // $_SESSION['filter_text'] = _e('Showing Data') . ' ' . $filter_text;
+                $_SESSION['filter_text'] = $filter_text;
             } else {
                 unset($_SESSION['filter_text']);
             }
@@ -705,29 +799,29 @@ if (!class_exists('WbbmReport')) {
                     case 'last_year' :
                         $f_date = date("Y-m-d", strtotime("last year January 1st"));
                         $t_date = date("Y-m-d", strtotime("last year December 31st"));
-                        $filter_text = $this->lang('Last Year\'s');
+                        $filter_text = __('Last Year\'s','addon-bus--ticket-booking-with-seat-pro');
                         break;
                     case 'this_year' :
                         $f_date = date('Y') . '-01-01';
                         $t_date = date('Y') . '-12-31';
-                        $filter_text = $this->lang('This Year\'s');
+                        $filter_text = __('This Year\'s','addon-bus--ticket-booking-with-seat-pro');
                         break;
                     case 'last_month' :
                         $f_date = date("Y-m-d", strtotime("first day of previous month"));
                         $f_date = date("Y-m-d", strtotime($f_date . ' 23:59:59'));
                         $t_date = date("Y-m-d", strtotime("last day of previous month"));
                         $t_date = date("Y-m-d", strtotime($t_date . ' 23:59:59'));
-                        $filter_text = $this->lang('Last Month\'s');
+                        $filter_text = __('Last Month\'s','addon-bus--ticket-booking-with-seat-pro');
                         break;
                     case 'this_month' :
                         $f_date = date("Y-m-d", strtotime("first day of this month"));
                         $t_date = date("Y-m-d", strtotime("last day of this month"));
-                        $filter_text = $this->lang('This Month\'s');
+                        $filter_text = __('This Month\'s','addon-bus--ticket-booking-with-seat-pro');
                         break;
                     case 'last_week' :
                         $f_date = date("Y-m-d", strtotime("-7 days"));
                         $t_date = date("Y-m-d", strtotime("yesterday"));
-                        $filter_text = $this->lang('Last Week\'s');
+                        $filter_text = __('Last Week\'s','addon-bus--ticket-booking-with-seat-pro');
                         break;
                 }
 
@@ -749,7 +843,7 @@ if (!class_exists('WbbmReport')) {
                 $query_where = "AND booking_date >= '$f_date' AND booking_date <= '$t_date'";
 
                 if ($filter_text != '') {
-                    $_SESSION['filter_text'] = $this->lang('Showing') . ' ' . $filter_text . ' Data';
+                    $_SESSION['filter_text'] = __('Showing','addon-bus--ticket-booking-with-seat-pro') . ' ' . $filter_text . ' Data';
                 } else {
                     unset($_SESSION['filter_text']);
                 }
@@ -830,23 +924,23 @@ if (!class_exists('WbbmReport')) {
             return array(
                 array(
                     'value' => 7,
-                    'name' => $this->lang('7 Days'),
+                    'name' => __('7 Days','addon-bus--ticket-booking-with-seat-pro'),
                 ),
                 array(
                     'value' => 10,
-                    'name' => $this->lang('10 Days'),
+                    'name' => __('10 Days','addon-bus--ticket-booking-with-seat-pro'),
                 ),
                 array(
                     'value' => 15,
-                    'name' => $this->lang('15 Days'),
+                    'name' => __('15 Days','addon-bus--ticket-booking-with-seat-pro'),
                 ),
                 array(
                     'value' => 30,
-                    'name' => $this->lang('30 Days'),
+                    'name' => __('30 Days','addon-bus--ticket-booking-with-seat-pro'),
                 ),
                 array(
                     'value' => 120,
-                    'name' => $this->lang('120 Days'),
+                    'name' => __('120 Days','addon-bus--ticket-booking-with-seat-pro'),
                 ),
 
             );
@@ -979,9 +1073,9 @@ if (!class_exists('WbbmReport')) {
 
             $html = '';
             if ($res) {
-                $html .= '<tr class="wbbm_report_detail"><td colspan="10">';
+                $html .= '<tr class="wbbm_report_detail"><td colspan="12">';
                 $html .= '<table><thead><tr>';
-                $html .= '<th>Name</th><th>Email</th><th>Phone</th><th>Seat</th><th>Price</th>';
+                $html .= '<th>Name</th><th>Email</th><th>Phone</th><th>Seat</th><th>Seat Price</th>';
                 $html .= '</tr></thead>';
                 $html .= '<tbody>';
                 while ($res->have_posts()) {
@@ -1127,28 +1221,33 @@ if (!class_exists('WbbmReport')) {
 
             $header_row = array(
                 'Order no',
+                'Billing Name',
                 'Booking Date',
                 'Boarding',
                 'Dropping',
-                'Price',
+                'Qty',
+                'Seat',
+                'Seat Price',
+                'Extra Service Price',
+                'Total Price',
                 'Status',
             );
 
             $data_rows = array();
-            if ($res) {
+            if ($res && $filter_where) :
                 $all_orders = [];
                 while ($res->have_posts()) {
                     $res->the_post();
                     $all_orders[] = array(
                         'id' => get_post_meta(get_the_ID(), 'wbtm_order_id', true),
                         'amount' => get_post_meta(get_the_ID(), 'wbtm_bus_fare', true),
+                        'booking_id' => get_the_ID()
                     );
                 }
                 wp_reset_postdata();
 
                 $i = 0;
-                while ($res->have_posts()) {
-                    $res->the_post();
+                while ($res->have_posts()) : $res->the_post();
                     $id = get_the_ID();
                     $order = wc_get_order($this->wbbm_post_meta($id, 'wbtm_order_id'));
 
@@ -1156,45 +1255,55 @@ if (!class_exists('WbbmReport')) {
                     $prev_order = (isset($prev_order) ? $prev_order : $current_order);
 
                     $amount = 0;
+                    $count = 0;
+                    $j = 0;
+                    $seat = array();
+
                     if ($current_order != $prev_order || $i == 0) {
                         foreach ($all_orders as $o) {
                             if ($current_order == $o['id']) {
                                 $amount += (float)$o['amount'];
+                                $count += $j + 1;
+                                $seat[] = $this->wbbm_post_meta($o['booking_id'], 'wbtm_seat');
+                            }
+                        }
+
+                        // Extra Service Price
+                        $get_es_prices = get_post_meta($current_order, '_extra_services', true);
+                        $es_price = 0;
+                        if ($get_es_prices) {
+                            foreach ($get_es_prices as $price) {
+                                $es_price += $price['qty'] * $price['price'];
                             }
                         }
 
                         $data_rows[] = array(
                             $current_order,
+                            ($order ? $order->get_formatted_billing_full_name() : ""),
                             $this->wbbm_post_meta($id, 'wbtm_booking_date'),
                             $this->wbbm_post_meta($id, 'wbtm_boarding_point'),
                             $this->wbbm_post_meta($id, 'wbtm_droping_point'),
+                            $count,
+                            ($seat ? implode(', ', $seat) : ''),
                             $amount,
-                            ($order ? $order->get_status() : ""),
+                            ($es_price ? $es_price : null),
+                            ($amount + $es_price),
+                            ($order ? $order->get_status() : "")
                         );
                     }
 
+                    $j++;
+
                     $prev_order = $current_order;
                     $i++;
-                }
-                wp_reset_postdata();
-            }
+                endwhile; endif;
+            wp_reset_postdata();
+            // END
 
 
             if ($data_rows) {
                 $domain = $filter_text ? $filter_text : '';
                 $filename = 'Report_' . $domain . '_' . time() . '.csv';
-
-                $header_row = array(
-                    'Order no',
-                    'Booking Date',
-                    'Boarding',
-                    'Dropping',
-                    'Price',
-                    'Status',
-                );
-
-//                $g_total = 0;
-//                array_push($data_rows, array('Total', '', $g_total));
 
                 $this->csv($header_row, $data_rows, $filename);
                 $msg = true;
@@ -1385,6 +1494,12 @@ if (!class_exists('WbbmReport')) {
             wp_reset_postdata();
 
             return $bus_lists;
+        }
+
+        public function __destruct()
+        {
+            if( session_id() )
+                session_write_close();
         }
 
     }

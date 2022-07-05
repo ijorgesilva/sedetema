@@ -20,6 +20,7 @@ class WbtmPro_Plugin {
 		require_once WBTMPRO_PLUGIN_DIR . 'includes/class-metabox.php';
 		require_once WBTMPRO_PLUGIN_DIR . 'includes/class-function.php';
 		require_once WBTMPRO_PLUGIN_DIR . 'includes/passenger_list.php';
+		require_once WBTMPRO_PLUGIN_DIR . 'includes/extra_services.php';
 		require_once WBTMPRO_PLUGIN_DIR . 'includes/report.php';
 		require_once WBTMPRO_PLUGIN_DIR . 'includes/class_wbbm_report.php';
 		require_once WBTMPRO_PLUGIN_DIR . 'includes/class-csv-export.php';

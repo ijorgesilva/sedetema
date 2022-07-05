@@ -18,7 +18,7 @@ function wbtm_pro_view_tickets($atts, $content = null)
         <form action="<?php echo get_site_url(); ?>/view-ticket" method="get">
             <h2>Search Ticket</h2>
             <input required type="text" placeholder="Enter Ticket PIN" value='<?php echo $pin; ?>' name='pin' class='ticket-input' />
-            <button type="submit" class="ticket-btn">Search Ticket</button>
+            <button type="submit" class="ticket-btn"><?php _e('Search Ticket','addon-bus--ticket-booking-with-seat-pro') ?></button>
         </form>
     </div>
     <?php
@@ -86,7 +86,7 @@ function wbtm_pro_view_tickets($atts, $content = null)
                 $pin            = $order_id . "-" . $ticket . "-" . $user_id . "-" . $bus_id;
                 $order          = wc_get_order($order_id);
     ?>
-                <div class="wbtm-ticket-body">
+                <div class="wbtm-ticket-body wbtm-view-ticket">
 
                     <div class="wbtm-ticket">
                         <div class="wbtm-ticket-qr-code">
@@ -101,57 +101,55 @@ function wbtm_pro_view_tickets($atts, $content = null)
                         <div class="wbtm-ticket-single">
                             <div class="wbtm-ticket-inline wbtm-bus-title">
 
-                                <?php echo get_the_title($bus_id); ?> </h3>
+                                <strong><?php _e('Bus', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong>: <?php echo get_the_title($bus_id); ?> </h3>
                             </div>
-                            <div class="wbtm-ticket-inline"><strong><?php _e('PIN:::', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo $pin; ?> </div>
+                            <div class="wbtm-ticket-inline"><strong><?php _e('PIN', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong>: <?php echo $pin; ?> </div>
                         </div>
 
                         <div class="wbtm-ticket-single">
                             <?php if ($name) { ?>
-                                <div class="wbtm-ticket-inline"><strong><?php _e('Name:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo $name; ?></div>
+                                <div class="wbtm-ticket-inline"><strong><?php _e('Name', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong>: <?php echo $name; ?></div>
                             <?php } elseif ($phone) { ?>
-                                <div class="wbtm-ticket-inline"><strong><?php _e('Phone:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo $phone; ?></div>
+                                <div class="wbtm-ticket-inline"><strong><?php _e('Phone', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong>: <?php echo $phone; ?></div>
                             <?php } else { ?><div class="wbtm-ticket-inline"></div> <?php } ?>
                         </div>
 
                         <div class="wbtm-ticket-single">
                             <?php if ($gender) { ?>
-                                <div class="wbtm-ticket-inline"><strong><?php _e('Gender:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo $gender; ?></div>
+                                <div class="wbtm-ticket-inline"><strong><?php _e('Gender', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong>: <?php echo $gender; ?></div>
                             <?php } elseif ($email) { ?>
-                                <div class="wbtm-ticket-inline"><strong><?php _e('Email:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo $email; ?></div>
+                                <div class="wbtm-ticket-inline"><strong><?php _e('Email', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong>: <?php echo $email; ?></div>
                             <?php } else { ?><div class="wbtm-ticket-inline"></div> <?php } ?>
                         </div>
 
                         <?php if ($address) { ?>
                             <div class="wbtm-ticket-single">
-                                <div class="wbtm-ticket-inline"><strong><?php _e('Address:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo $address; ?></div>
+                                <div class="wbtm-ticket-inline"><strong><?php _e('Address', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong>: <?php echo $address; ?></div>
                             </div>
                         <?php } ?>
 
                         <div class="wbtm-ticket-single">
-                            <div class="wbtm-ticket-inline"><strong><?php _e('Journey Date:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo get_wbtm_datetime($journey_date, 'date-time'); ?></div>
-                            <div class="wbtm-ticket-inline"><strong><?php _e('Time:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo get_wbtm_datetime($start_time, 'time'); ?></div>
+                            <div class="wbtm-ticket-inline"><strong><?php _e('Journey Date', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong>: <?php echo get_wbtm_datetime($journey_date, 'date-time'); ?></div>
+                            <div class="wbtm-ticket-inline"><strong><?php _e('Time', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong>: <?php echo get_wbtm_datetime($start_time, 'time'); ?></div>
                         </div>
 
                         <div class="wbtm-ticket-single">
-                            <div class="wbtm-ticket-inline"><strong><?php _e('Boarding:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo $boarding; ?></div>
-                            <div class="wbtm-ticket-inline"><strong><?php _e('Dropping:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo $dropping; ?></div>
+                            <div class="wbtm-ticket-inline"><strong><?php _e('Boarding', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong>: <?php echo $boarding; ?></div>
+                            <div class="wbtm-ticket-inline"><strong><?php _e('Dropping', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong>: <?php echo $dropping; ?></div>
                         </div>
 
                         <div class="wbtm-ticket-single">
-                            <div class="wbtm-ticket-inline"><strong><?php _e('Seat:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo $seat; ?></div>
-                            <div class="wbtm-ticket-inline"><strong><?php _e('Bus No:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo get_post_meta($bus_id, 'wbtm_bus_no', true); ?></div>
+                            <div class="wbtm-ticket-inline"><strong><?php _e('Seat', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong>: <?php echo $seat; ?></div>
+                            <div class="wbtm-ticket-inline"><strong><?php _e('Bus No', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong>: <?php echo get_post_meta($bus_id, 'wbtm_bus_no', true); ?></div>
                         </div>
 
                         <div class="wbtm-ticket-single">
-                            <div class="wbtm-ticket-inline"><strong><?php _e('Seat:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo $seat; ?></div>
-                            <div class="wbtm-ticket-inline"><strong><?php _e('Bus No:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo get_post_meta($bus_id, 'wbtm_bus_no', true); ?></div>
+                            <div class="wbtm-ticket-inline"><strong><?php _e('Price', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong>: <?php echo wc_price($fare);; ?></div>
+                            <div class="wbtm-ticket-inline"><strong><?php _e('Purchased on', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong>: <?php echo get_wbtm_datetime($booking_date, 'date-time-text'); ?></div>
                         </div>
-
-                        <div class="wbtm-ticket-single">
-                            <div class="wbtm-ticket-inline"><strong><?php _e('Price:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo wc_price($fare);; ?></div>
-                            <div class="wbtm-ticket-inline"><strong><?php _e('Purchase on:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo get_wbtm_datetime($booking_date, 'date-time-text'); ?></div>
-                        </div>
+                    </div>
+                    <div style="text-align:center;margin:20px 0;">
+                        <?php echo do_shortcode('[wbtm-ticket-link order-id="'.$order_id.'"]'); ?>
                     </div>
                 </div>
 
@@ -163,4 +161,23 @@ function wbtm_pro_view_tickets($atts, $content = null)
         <h3 align=center><?php _e('You need to login your account to view the ticket.', 'addon-bus--ticket-booking-with-seat-pro'); ?> </h3>
 <?php
     }
+}
+
+add_shortcode('wbtm-ticket-link', 'wbtm_pro_ticket_link');
+function wbtm_pro_ticket_link($atts) {
+    global $magepdf;
+
+    $prop = shortcode_atts( array(
+        'order-id' => null
+    ), $atts );
+
+    $order_id = $prop['order-id'];
+
+    if($order_id) {
+        $link = get_site_url().'/?action=download_pdf_ticket&order_id='.$order_id;
+        return '<a class="wbtm-download-ticket" href="'.$link.'">'.__("Download Ticket", "addon-bus--ticket-booking-with-seat-pro").'</a>';
+    } else {
+        return 'Order id not found!';
+    }
+
 }

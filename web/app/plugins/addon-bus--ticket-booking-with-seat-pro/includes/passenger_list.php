@@ -16,7 +16,7 @@ add_action('admin_menu', 'wbtm_passenger_list_menu');
 
 function wbtm_passenger_list_menu()
 {
-    add_submenu_page('edit.php?post_type=wbtm_bus', __('Passenger List', 'addon-bus--ticket-booking-with-seat-pro'), __('Passenger List', 'wbtm-menu'), 'manage_options', 'passenger_list', 'wbtm_passenger_list');
+    add_submenu_page('edit.php?post_type=wbtm_bus', __('Passenger List', 'addon-bus--ticket-booking-with-seat-pro'), __('Passenger List', 'addon-bus--ticket-booking-with-seat-pro'), 'manage_options', 'passenger_list', 'wbtm_passenger_list');
 }
 
 
@@ -24,6 +24,19 @@ function wbtm_passenger_list()
 {
     global $wpdb, $magepdf, $wbtmmain, $pagination_per_page;
     $table_name = $wpdb->prefix . "wbtm_bus_booking_list";
+    $limit = 0;
+
+    // Passenger info editing
+    if(isset($_GET['mode']) && $_GET['mode'] == 'passenger_info_edit') {
+        $booking_id = isset($_GET['booking_id']) ? $_GET['booking_id'] : null;
+
+        if($booking_id) {
+            wbtm_passenger_info_edit($booking_id);
+            return;
+        }
+
+    }
+    // Passenger info editing END
 
     if (isset($_POST['pagination_limit'])) {
         $limit = $_POST['pagination_limit'];
@@ -87,7 +100,7 @@ function wbtm_passenger_list()
 
     ?>
     <div class="wrap">
-        <h2><?php _e('Passenger List', 'addon-bus--ticket-booking-with-seat-pro') ?></h2>
+        <h2><?php echo __('Passenger List', 'addon-bus--ticket-booking-with-seat-pro') ?></h2>
         <?php 
         if(isset($_GET['action']) && $_GET['action'] == 'deleted_list') : 
             $args = array(
@@ -149,129 +162,108 @@ function wbtm_passenger_list()
         </table>
 
         <?php else : ?>
-            <form action="<?php echo get_admin_url(); ?>edit.php?post_type=wbtm_bus&page=passenger_list" method="get">
+        <form action="<?php echo get_admin_url(); ?>edit.php?post_type=wbtm_bus&page=passenger_list" method="get">
             <input type="hidden" name="post_type" value="wbtm_bus">
             <input type="hidden" name="page" value="passenger_list">
 
-            <div class="mage-custom-filter-area">
-                <span class="mage-custom-filter-text"><?php _e('Filter list', 'addon-bus--ticket-booking-with-seat-pro') ?></span>
-                <a href="?post_type=wbtm_bus&page=passenger_list"
-                   class="mage-custom-filter-clear"><?php _e('Clear all filter', 'addon-bus--ticket-booking-with-seat-pro') ?></a>
-                <?php do_action('mtsa_bus_type_fiter', $isSub, $isZone) ?>
-                <div class="mage-custom-filter-item">
-                    <label for="mage-f-bus-type">Bus Name</label>
-                    <select id="mage-f-bus-type" name="bus_id">
-                        <option value=""><?php _e('By Bus', 'addon-bus--ticket-booking-with-seat-pro'); ?></option>
-                        <?php
-                        $args = array(
-                            'post_type' => 'wbtm_bus',
-                            'posts_per_page' => -1
-                        );
-                        $loop = new WP_Query($args);
-                        while ($loop->have_posts()) {
-                            $loop->the_post();
-                            $start = get_post_meta(get_the_id(), 'wbtm_bus_no', true);
-                            $busit = get_the_id() . "-" . $start;
-                            ?>
-                            <option value="<?php echo $busit; ?>" <?php if ($busit == $bus_id) {
-                                echo 'selected';
-                            } ?>><?php the_title(); ?> - <?php echo $start; ?></option>
+            <div class="mage-custom-filter-area-outer">
+                <div class="mage-custom-filter-text">
+                    <span><?php _e('Filter list', 'addon-bus--ticket-booking-with-seat-pro') ?></span>
+                </div>
+                <span class="wbtm-section-toggle"><i class="fas fa-arrow-circle-up"></i></span>
+                <div class="mage-custom-filter-area">
+                    <a href="?post_type=wbtm_bus&page=passenger_list"
+                    class="mage-custom-filter-clear"><?php _e('Clear all filter', 'addon-bus--ticket-booking-with-seat-pro') ?></a>
+                    <?php do_action('mtsa_bus_type_fiter', $isSub, $isZone) ?>
+                    <div class="mage-custom-filter-item">
+                        <label for="mage-f-bus-type">Bus Name</label>
+                        <select id="mage-f-bus-type" name="bus_id">
+                            <option value=""><?php _e('By Bus', 'addon-bus--ticket-booking-with-seat-pro'); ?></option>
                             <?php
-                        }
-                        wp_reset_postdata();
-                        ?>
-                    </select>
+                            $args = array(
+                                'post_type' => 'wbtm_bus',
+                                'posts_per_page' => -1
+                            );
+                            $loop = new WP_Query($args);
+                            while ($loop->have_posts()) {
+                                $loop->the_post();
+                                $start = get_post_meta(get_the_id(), 'wbtm_bus_no', true);
+                                $busit = get_the_id() . "-" . $start;
+                                ?>
+                                <option value="<?php echo $busit; ?>" <?php if ($busit == $bus_id) {
+                                    echo 'selected';
+                                } ?>><?php the_title(); ?> - <?php echo $start; ?></option>
+                                <?php
+                            }
+                            wp_reset_postdata();
+                            ?>
+                        </select>
+                    </div>
+
+                    <div class="mage-custom-filter-item">
+                        <label for="mage-f-journey-date"><?php _e('Journey Date', 'addon-bus--ticket-booking-with-seat-pro') ?></label>
+                        <input id="mage-f-journey-date" type="text" id="ja_date" name="j_date"
+                            placeholder="<?php echo mage_wp_date(date('Y-m-d')) ?>"
+                            value="<?php echo(isset($_GET['j_date']) ? $_GET['j_date'] : '') ?>">
+                    </div>
+
+                    <div class="mage-custom-filter-item">
+                        <label for="filter_name"><?php _e('Passenger Name', 'addon-bus--ticket-booking-with-seat-pro') ?></label>
+                        <input type="text" id="filter_name" name="filter_name"
+                            placeholder="John Doe"
+                            value="<?php echo(isset($_GET['filter_name']) ? $_GET['filter_name'] : '') ?>">
+                    </div>
+
+                    <div class="mage-custom-filter-item">
+                        <label for="filter_email"><?php _e('Passenger Email', 'addon-bus--ticket-booking-with-seat-pro') ?></label>
+                        <input type="text" id="filter_email" name="filter_email"
+                            placeholder="email@domain.com"
+                            value="<?php echo(isset($_GET['filter_email']) ? $_GET['filter_email'] : '') ?>">
+                    </div>
+
+                    <div class="mage-custom-filter-item">
+                        <label for="filter_phone"><?php _e('Passenger Phone', 'addon-bus--ticket-booking-with-seat-pro') ?></label>
+                        <input type="text" id="filter_phone" name="filter_phone"
+                            placeholder="123456789"
+                            value="<?php echo(isset($_GET['filter_phone']) ? $_GET['filter_phone'] : '') ?>">
+                    </div>
+
+                    <div class="mage-custom-filter-item">
+                        <label for="filter_booking_date"><?php _e('Booking Date', 'addon-bus--ticket-booking-with-seat-pro') ?></label>
+                        <input type="text" id="filter_booking_date" name="filter_booking_date"
+                            placeholder="<?php echo mage_wp_date(date('Y-m-d')); ?>"
+                            value="<?php echo(isset($_GET['filter_booking_date']) ? $_GET['filter_booking_date'] : '') ?>">
+                    </div>
+
+                    <div class="mage-custom-filter-item">
+                        <label for="filter_order_id"><?php _e('Order Id', 'addon-bus--ticket-booking-with-seat-pro') ?></label>
+                        <input type="text" id="filter_order_id" name="filter_order_id"
+                            placeholder="0001"
+                            value="<?php echo(isset($_GET['filter_order_id']) ? $_GET['filter_order_id'] : '') ?>">
+                    </div>
+
+
+                    <div class="mage-custom-filter-item">
+                        <button type="submit"><?php _e('Filter', 'addon-bus--ticket-booking-with-seat-pro') ?></button>
+                    </div>
+
                 </div>
-
-                <div class="mage-custom-filter-item">
-                    <label for="mage-f-journey-date">Journey Date</label>
-                    <input id="mage-f-journey-date" type="text" id="ja_date" name="j_date"
-                           placeholder="<?php _e('By Journey Date', 'addon-bus--ticket-booking-with-seat-pro') ?>"
-                           value="<?php echo(isset($_GET['j_date']) ? $_GET['j_date'] : '') ?>">
-                </div>
-
-                <div class="mage-custom-filter-item">
-                    <label for="filter_name">Passenger Name</label>
-                    <input type="text" id="filter_name" name="filter_name"
-                           placeholder="<?php _e('By Name', 'addon-bus--ticket-booking-with-seat-pro') ?>"
-                           value="<?php echo(isset($_GET['filter_name']) ? $_GET['filter_name'] : '') ?>">
-                </div>
-
-                <div class="mage-custom-filter-item">
-                    <label for="filter_email">Passenger Email</label>
-                    <input type="text" id="filter_email" name="filter_email"
-                           placeholder="<?php _e('By Email', 'addon-bus--ticket-booking-with-seat-pro') ?>"
-                           value="<?php echo(isset($_GET['filter_email']) ? $_GET['filter_email'] : '') ?>">
-                </div>
-
-                <div class="mage-custom-filter-item">
-                    <label for="filter_phone">Passenger Phone</label>
-                    <input type="text" id="filter_phone" name="filter_phone"
-                           placeholder="<?php _e('By Phone no', 'addon-bus--ticket-booking-with-seat-pro') ?>"
-                           value="<?php echo(isset($_GET['filter_phone']) ? $_GET['filter_phone'] : '') ?>">
-                </div>
-
-                <div class="mage-custom-filter-item">
-                    <label for="filter_booking_date">Booking Date</label>
-                    <input type="text" id="filter_booking_date" name="filter_booking_date"
-                           placeholder="<?php _e('Booking Date', 'addon-bus--ticket-booking-with-seat-pro') ?>"
-                           value="<?php echo(isset($_GET['filter_booking_date']) ? $_GET['filter_booking_date'] : '') ?>">
-                </div>
-
-                <div class="mage-custom-filter-item">
-                    <label for="filter_order_id">Order Id</label>
-                    <input type="text" id="filter_order_id" name="filter_order_id"
-                           placeholder="<?php _e('By Order Id', 'addon-bus--ticket-booking-with-seat-pro') ?>"
-                           value="<?php echo(isset($_GET['filter_order_id']) ? $_GET['filter_order_id'] : '') ?>">
-                </div>
-
-
-                <div class="mage-custom-filter-item">
-                    <button type="submit"><?php _e('Filter', 'addon-bus--ticket-booking-with-seat-pro') ?></button>
-                </div>
-
             </div>
 
         </form>
 
         <div style="display:flex;justify-content:space-between;align-items:center;flex-direction: row-reverse;margin:20px 0;">
-            <div class="alignright">
-                <form method='get' action="edit.php">
-                    <input type="hidden" name='bus_id'
-                           value="<?php echo(isset($_GET['bus_id']) ? $_GET['bus_id'] : '') ?>"/>
-                    <input type="hidden" name='bus_type'
-                           value="<?php echo(isset($_GET['bus_type']) ? $_GET['bus_type'] : 'general') ?>"/>
-                    <input type="hidden" name='route_type'
-                           value="<?php echo(isset($_GET['route_type']) ? $_GET['route_type'] : '') ?>"/>
-                    <input type="hidden" name='j_date'
-                           value="<?php echo(isset($_GET['j_date']) ? $_GET['j_date'] : '') ?>"/>
-                    <input type="hidden" name="filter_name"
-                           value="<?php echo(isset($_GET['filter_name']) ? $_GET['filter_name'] : '') ?>">
-                    <input type="hidden" name="filter_email"
-                           value="<?php echo(isset($_GET['filter_email']) ? $_GET['filter_email'] : '') ?>">
-                    <input type="hidden" name="filter_phone"
-                           value="<?php echo(isset($_GET['filter_phone']) ? $_GET['filter_phone'] : '') ?>">
-                    <input type="hidden" name="filter_booking_date"
-                           value="<?php echo(isset($_GET['filter_booking_date']) ? $_GET['filter_booking_date'] : '') ?>">
-                    <input type="hidden" name="filter_order_id"
-                           value="<?php echo(isset($_GET['filter_order_id']) ? $_GET['filter_order_id'] : '') ?>">
-                    <input type="hidden" name="post_type" value="wbtm_bus">
-                    <input type="hidden" name="page" value="passenger_list">
-                    <input type="hidden" name='noheader' value="1"/>
-                    <input type="hidden" name='action' value="export_passenger_list"/>
-                    <input style="display:none" type="radio" name='format' id="formatCSV" value="csv"
-                           checked="checked"/>
-                    <input type="submit" name='export' id="csvExport" value="Export to CSV"/>
-                </form>
-            </div>
-
-
+            
             <?php
 
             // Passenger List query and pagination data
             $current_page = (isset($_GET['paged']) ? $_GET['paged'] : 1);
 
             $offset = ($current_page * $limit) - $limit;
+
+            // Seat booked show policy in search
+            $seat_booked_status_default = array(1, 2);
+            $seat_booked_status = (isset(get_option('wbtm_bus_settings')['bus_seat_booked_on_order_status']) ? get_option('wbtm_bus_settings')['bus_seat_booked_on_order_status'] : $seat_booked_status_default);
 
             // Common Meta
             $common = array(
@@ -291,17 +283,9 @@ function wbtm_passenger_list()
             $meta_query = array(
                 'relation' => 'AND',
                 array(
-                    'relation' => 'OR',
-                    array(
-                        'key' => 'wbtm_status',
-                        'value' => 1,
-                        'compare' => '='
-                    ),
-                    array(
-                        'key' => 'wbtm_status',
-                        'value' => 2,
-                        'compare' => '='
-                    ),
+                    'key' => 'wbtm_status',
+                    'value' => $seat_booked_status,
+                    'compare' => 'IN'
                 ),
             );
 
@@ -327,14 +311,47 @@ function wbtm_passenger_list()
                 $has_filter = true;
                 $filter_text .= ' <span class="mage-filted_item">Bus -> ' . $bus_id . '</span>';
             }
+
+            // Bus type
+            $bus_type = isset($_GET['bus_type']) ? $_GET['bus_type'] : 'general';
             // Journey Date
             $j_date = (isset($_GET['j_date']) ? $_GET['j_date'] : null);
+            $j_dates = array($j_date);
+            if($bus_id && $j_date) {
+                $bus_start_stops_arr = get_post_meta($bus_id, 'wbtm_bus_bp_stops', true);
+                $bus_start_stops_arr = $bus_start_stops_arr ? maybe_unserialize($bus_start_stops_arr) : array();
+                $is_midnight = mage_bus_is_midnight_trip($bus_start_stops_arr);
+                if($is_midnight) {
+                    $next_date = date('Y-m-d', strtotime('+1 day', strtotime($j_date)));
+                    array_push($j_dates, $next_date);
+                }
+            }
+
             if ($j_date) {
-                array_push($filter_query, array(
-                    'key' => 'wbtm_journey_date',
-                    'value' => $j_date,
-                    'compare' => '='
-                ));
+                if($bus_type == 'sub') {
+                    $o_date = date('Y-m-d', strtotime($j_date));
+                    array_push($filter_query, array(
+                        'relation' => 'AND',
+                        array(
+                            'key' => 'wbtm_journey_date',
+                            'value' => $o_date,
+                            'compare' => '<=',
+                            'type' => 'DATE'
+                        ),
+                        array(
+                            'key' => 'wbtm_sub_end_date',
+                            'value' => $o_date,
+                            'compare' => '>=',
+                            'type' => 'DATE'
+                        )
+                    ));
+                } else {
+                    array_push($filter_query, array(
+                        'key' => 'wbtm_journey_date',
+                        'value' => $j_dates,
+                        'compare' => 'IN'
+                    ));
+                }
                 $has_filter = true;
                 $filter_text .= ' <span class="mage-filted_item">Journey Date -> ' . $j_date . '</span>';
             }
@@ -395,7 +412,6 @@ function wbtm_passenger_list()
             }
 
             // Bus Type
-            $bus_type = isset($_GET['bus_type']) ? $_GET['bus_type'] : 'general';
             if ($bus_type === 'sub') {
                 array_push($filter_query, array(
                     'key' => 'wbtm_billing_type',
@@ -450,7 +466,7 @@ function wbtm_passenger_list()
                 $custom_fields_arr = explode(',', $custom_fields);
                 if ($custom_fields_arr) {
                     foreach ($custom_fields_arr as $item) {
-                        $custom_heading_html .= '<th>' . $item . '</th>';
+                        $custom_heading_html .= '<th>' . (($item) ? ucfirst(str_replace('_', ' ', $item)) : "") . '</th>';
                     }
                 }
             }
@@ -500,15 +516,14 @@ function wbtm_passenger_list()
             if ($p_country) {
                 $billing_default_heading .= "<th>" . __('Country', 'addon-bus--ticket-booking-with-seat-pro') . "</th>";
             }
-            if ($p_country) {
-                $billing_default_heading .= "<th>" . __('Country', 'addon-bus--ticket-booking-with-seat-pro') . "</th>";
-            }
             // if($p_total_paid) {
             //     $billing_default_heading .= "<th>".__('Total Paid', 'addon-bus--ticket-booking-with-seat-pro')."</th>";
             // }
             if ($p_payment_method) {
                 $billing_default_heading .= "<th>" . __('Payment Method', 'addon-bus--ticket-booking-with-seat-pro') . "</th>";
             }
+            // Extra Passenger info fields
+            $billing_default_heading .= "<th>" . __('Extra Info', 'addon-bus--ticket-booking-with-seat-pro') . "</th>";
 
             // Defautl Billing field END
 
@@ -519,7 +534,6 @@ function wbtm_passenger_list()
                 $subscription_fields_heading .= "<th>" . __('Valid till', 'addon-bus--ticket-booking-with-seat-pro') . "</th>";
                 $subscription_fields_heading .= "<th>" . __('Billing Type', 'addon-bus--ticket-booking-with-seat-pro') . "</th>";
                 $subscription_fields_heading .= "<th>" . __('Zone', 'addon-bus--ticket-booking-with-seat-pro') . "</th>";
-                $subscription_fields_heading .= "<th>" . __('Check in', 'addon-bus--ticket-booking-with-seat-pro') . "</th>";
             }
 
 
@@ -528,23 +542,52 @@ function wbtm_passenger_list()
 
             ?>
 
-            <?php echo ($filter_text != null) ? '<p class="mage-filted-text">Search By ->' . $filter_text . '</p>' : ''; ?>
+            
         </div>
         <div class="wbtm-table-wrap" style="overflow-x: auto">
-            <div style="display: flex;justify-content: flex-end;align-items:center;">
-                <div class="restore-data-list-wrap">
-                    <a href="<?php echo get_admin_url(); ?>edit.php?post_type=wbtm_bus&page=passenger_list&action=deleted_list" style="padding: 5px;color: #946826;cursor: pointer;"><?php _e('Show removed passeger list', 'addon-bus--ticket-booking-with-seat-pro') ?></a>
+            <div style="display: flex;align-items:center;">
+                <div style="flex-grow: 2"><?php echo ($filter_text != null) ? '<p class="mage-filted-text">Search By ->' . $filter_text . '</p>' : ''; ?></div>
+                <div class="restore-data-list-wrap"><a href="<?php echo get_admin_url(); ?>edit.php?post_type=wbtm_bus&page=passenger_list&action=deleted_list" style="text-decoration: none;padding:5px 5px 5px 14px;color: #f4433c;cursor: pointer;"> <?php _e('Show Removed List', 'addon-bus--ticket-booking-with-seat-pro') ?></a>
+                </div>
+                <div style="margin-left: 10px;">
+                    <form method='get' action="edit.php">
+                        <input type="hidden" name='bus_id'
+                            value="<?php echo(isset($_GET['bus_id']) ? $_GET['bus_id'] : '') ?>"/>
+                        <input type="hidden" name='bus_type'
+                            value="<?php echo(isset($_GET['bus_type']) ? $_GET['bus_type'] : 'general') ?>"/>
+                        <input type="hidden" name='route_type'
+                            value="<?php echo(isset($_GET['route_type']) ? $_GET['route_type'] : '') ?>"/>
+                        <input type="hidden" name='j_date'
+                            value="<?php echo(isset($_GET['j_date']) ? $_GET['j_date'] : '') ?>"/>
+                        <input type="hidden" name="filter_name"
+                            value="<?php echo(isset($_GET['filter_name']) ? $_GET['filter_name'] : '') ?>">
+                        <input type="hidden" name="filter_email"
+                            value="<?php echo(isset($_GET['filter_email']) ? $_GET['filter_email'] : '') ?>">
+                        <input type="hidden" name="filter_phone"
+                            value="<?php echo(isset($_GET['filter_phone']) ? $_GET['filter_phone'] : '') ?>">
+                        <input type="hidden" name="filter_booking_date"
+                            value="<?php echo(isset($_GET['filter_booking_date']) ? $_GET['filter_booking_date'] : '') ?>">
+                        <input type="hidden" name="filter_order_id"
+                            value="<?php echo(isset($_GET['filter_order_id']) ? $_GET['filter_order_id'] : '') ?>">
+                        <input type="hidden" name="post_type" value="wbtm_bus">
+                        <input type="hidden" name="page" value="passenger_list">
+                        <input type="hidden" name='noheader' value="1"/>
+                        <input type="hidden" name='action' value="export_passenger_list"/>
+                        <input style="display:none" type="radio" name='format' id="formatCSV" value="csv"
+                            checked="checked"/>
+                        <input type="submit" name='export' id="csvExport" value="<?php _e('Export to CSV','addon-bus--ticket-booking-with-seat-pro'); ?>"/>
+                    </form>
                 </div>
                 <form action="" method="POST"
-                      style="min-width: 230px;margin-right: 0;display: flex;align-items: center;justify-content: flex-end;">
+                      style="min-width: 197px;margin-right: 0;display: flex;align-items: center;justify-content: flex-end;">
                     <label for=""
                            style="margin-right:5px"><?php _e('Row Per Page', 'addon-bus--ticket-booking-with-seat-pro') ?></label>
                     <input type="number" name="pagination_limit"
-                           value="<?php echo isset($_COOKIE["pagination_limit"]) ? $_COOKIE["pagination_limit"] : '' ?>"
-                           style="width:17px;border-radius: 0;border-color: #ccd0d4;margin: 0;flex-basis: 50%;">
+                           value="<?php echo $limit ?>"
+                           style="width:17px;border-radius: 0;border-color: #738b8b;margin: 0;flex-basis: 50%;" title="<?php _e('Type the number and press enter', 'addon-bus--ticket-booking-with-seat-pro'); ?>">
                 </form>
             </div>
-            <table class="wp-list-table widefat striped posts" style="width: 100%">
+            <table class="wp-list-table widefat striped posts wbtm_passenger_list_table" style="width: 100%">
                 <thead>
                 <tr>
                     <th>Sl</th>
@@ -580,6 +623,7 @@ function wbtm_passenger_list()
                     } ?>
 
                     <th><?php _e('Price', 'addon-bus--ticket-booking-with-seat-pro'); ?></th>
+                    <th><?php _e('Check in', 'addon-bus--ticket-booking-with-seat-pro'); ?></th>
                     <th><?php _e('Status', 'addon-bus--ticket-booking-with-seat-pro'); ?></th>
                     <th><?php _e('Action', 'addon-bus--ticket-booking-with-seat-pro'); ?></th>
                 </tr>
@@ -596,6 +640,7 @@ function wbtm_passenger_list()
                     'meta_query' => $meta_query
                 );
                 $passenger = new WP_Query($args);
+                // echo $passenger->request;
 
 
                 $res = $passenger->posts;
@@ -609,6 +654,10 @@ function wbtm_passenger_list()
                     $passenger_id = $_passger->ID;
                     $order_id = get_post_meta($passenger_id, 'wbtm_order_id', true);
                     $order = wc_get_order($order_id);
+                    $billing = array();
+                    if($order) {
+                        $billing = $order->get_address('billing');
+                    }
                     $order_meta_data = get_post_meta($order_id);
                     $download_url = $magepdf->get_invoice_ajax_url(array('order_id' => $order_id));
 
@@ -618,7 +667,8 @@ function wbtm_passenger_list()
                         $custom_fields_arr = explode(',', $custom_fields);
                         if ($custom_fields_arr) {
                             foreach ($custom_fields_arr as $item) {
-                                $custom_tbody_html .= '<td>' . get_post_meta($passenger_id, 'wbtm_custom_field' . $item, true) . '</td>';
+                                $item = trim($item);
+                                $custom_tbody_html .= '<td>' . get_post_meta($order_id, 'wbtm_custom_field_' . $item, true) . '</td>';
                             }
                         }
                     }
@@ -635,29 +685,44 @@ function wbtm_passenger_list()
                         $billing_default_body .= "<td>" . get_post_meta($passenger_id, 'wbtm_user_email', true) . "</td>";
                     }
                     if ($p_company) {
-                        $billing_default_body .= "<td>" . $order_meta_data['_billing_company'][0] . "</td>";
+                        $billing_default_body .= "<td>" . ($billing ? $billing['company'] : '') . "</td>";
                     }
                     if ($p_address) {
-                        $billing_default_body .= "<td>" . $order_meta_data['_billing_address_1'][0] . "</td>";
+                        $billing_default_body .= "<td>" . ($billing ? $billing['address_1'] : '') . "</td>";
                     }
                     if ($p_city) {
-                        $billing_default_body .= "<td>" . $order_meta_data['_billing_city'][0] . "</td>";
+                        $billing_default_body .= "<td>" . ($billing ? $billing['city'] : '') . "</td>";
                     }
                     if ($p_state) {
-                        $billing_default_body .= "<td>" . $order_meta_data['_billing_state'][0] . "</td>";
+                        $billing_default_body .= "<td>" . ($billing ? $billing['state'] : '') . "</td>";
                     }
                     if ($p_postcode) {
-                        $billing_default_body .= "<td>" . $order_meta_data['_billing_postcode'][0] . "</td>";
+                        $billing_default_body .= "<td>" . ($billing ? $billing['postcode'] : '') . "</td>";
                     }
                     if ($p_country) {
-                        $billing_default_body .= "<td>" . $order_meta_data['_billing_country'][0] . "</td>";
+                        $billing_default_body .= "<td>" . ($billing ? $billing['country'] : '') . "</td>";
                     }
                     // if($p_total_paid) {
                     //     $billing_default_body .= "<td>".$order_meta_data['_order_total'][0]."</td>";
                     // }
                     if ($p_payment_method) {
-                        $billing_default_body .= "<td>" . $order_meta_data['_payment_method'][0] . "</td>";
+                        $billing_default_body .= "<td>" . (isset($order_meta_data['_payment_method']) ? $order_meta_data['_payment_method'][0] : '') . "</td>";
                     }
+
+                    // Extra Passenger info fields value
+                    $extra_p_fields_values = get_post_meta($passenger_id, 'wbtm_user_additional', true);
+                    $extra_p_fields_value_str = '';
+                    $epv_i = 0;
+                    if($extra_p_fields_values) {
+                        $extra_p_fields_values = maybe_unserialize($extra_p_fields_values);
+                        if($extra_p_fields_values) {
+                            foreach($extra_p_fields_values as $epv) {
+                                $extra_p_fields_value_str .= sprintf("<strong>%s</strong> = %s", $epv['name'], $epv['value']) . ((count($extra_p_fields_values) - 1 == $epv_i) ? "" : " + ");
+                                $epv_i++;
+                            }
+                        }
+                    }
+                    $extra_p_fields_value_str = '<td>'.($extra_p_fields_value_str ? $extra_p_fields_value_str : "-").'</td>';
                     // Default Field END
                     ?>
                     <tr>
@@ -666,6 +731,7 @@ function wbtm_passenger_list()
                         if ($billing_default_body != '') {
                             echo $billing_default_body;
                         }
+                        echo $extra_p_fields_value_str;
                         ?>
                         <?php
                         if ($custom_tbody_html != '') {
@@ -673,25 +739,34 @@ function wbtm_passenger_list()
                         }
                         ?>
                         <td><?php echo get_post_meta($passenger_id, 'wbtm_seat', true); ?></td>
-                        <td><?php echo get_post_meta($passenger_id, 'wbtm_order_id', true); ?></td>
-                        <td><?php echo get_the_title(get_post_meta($passenger_id, 'wbtm_bus_id', true)) . "-" . get_post_meta(get_post_meta($passenger_id, 'wbtm_bus_id', true), 'wbtm_bus_no', true); ?></td>
-                        <td><?php echo get_post_meta($passenger_id, 'wbtm_booking_date', true); ?></td>
-                        <td>
+                        <td>#<?php echo get_post_meta($passenger_id, 'wbtm_order_id', true); ?></td>
+                        <td><?php echo get_the_title(get_post_meta($passenger_id, 'wbtm_bus_id', true)) . "<span class='wbtm_coach_no'>" . get_post_meta(get_post_meta($passenger_id, 'wbtm_bus_id', true), 'wbtm_bus_no', true).'</span>'; ?></td>
+                        <td><?php echo mage_wp_date(get_post_meta($passenger_id, 'wbtm_booking_date', true)); ?></td>
+                        <td style="width:86px">
                             <?php
                             $j_date = get_post_meta($passenger_id, 'wbtm_journey_date', true);
-                            echo $j_date;
+                            echo mage_wp_date($j_date);
                             ?>
-                            <?php echo get_post_meta($passenger_id, 'wbtm_user_start', true) . ' ' . mage_time_24_to_12(get_post_meta($passenger_id, 'wbtm_user_start', true)); ?>
+                            <?php echo mage_wp_time(get_post_meta($passenger_id, 'wbtm_user_start', true)); ?>
                         </td>
                         <?php if ($subscription_fields_heading) {
 
                             $billing_type = get_post_meta($passenger_id, 'wbtm_billing_type', true);
                             $city_zone_id = get_post_meta($passenger_id, 'wbtm_city_zone', true);
-                            $checkin_count = get_post_meta($passenger_id, 'wbtm_ticket_checkin_count', true);
+                            
+                            if(function_exists('wbtm_ticket_checkin_limit')) {
+                                $bus_id = get_post_meta($passenger_id, 'wbtm_bus_id', true);
+                                $sub_route_type = get_post_meta($bus_id, 'mtsa_subscription_route_type', true);
+                                $boarding = get_post_meta($passenger_id, 'wbtm_boarding_point', true);
+                                $dropping = get_post_meta($passenger_id, 'wbtm_droping_point', true);
+                                $city_zone = get_post_meta($passenger_id, 'wbtm_city_zone', true);
+                                $billing_type = get_post_meta($passenger_id, 'wbtm_billing_type', true);
+                                $checkin_limit = wbtm_ticket_checkin_limit($bus_id, $sub_route_type, $boarding, $dropping, $city_zone, $billing_type);
+                            }
 
                             // Billing Type
                             if ($billing_type) {
-                                echo '<td>' . mtsa_calculate_valid_date($j_date, $billing_type) . '</td>';
+                                echo '<td>' . mage_wp_date(mtsa_calculate_valid_date($j_date, $billing_type)) . '</td>';
                                 echo '<td>' . $billing_type . '</td>';
                             } else {
                                 echo '<td></td>';
@@ -704,38 +779,55 @@ function wbtm_passenger_list()
                             } else {
                                 echo '<td></td>';
                             }
-
-                            // Check in Count
-                            if ($checkin_count) {
-                                echo '<td>' . $checkin_count . '</td>';
-                            } else {
-                                echo '<td>0</td>';
-                            }
                         } ?>
                         <?php if($route_type != 'city_zone') {
                              echo '<td>'.get_post_meta($passenger_id, 'wbtm_boarding_point', true).'</td>';
                              echo '<td>'.get_post_meta($passenger_id, 'wbtm_droping_point', true).'</td>';
                         } ?>
 
-                        <?php echo (!$subscription_fields_heading) ? '<td>'.get_post_meta($passenger_id, 'wbtm_pickpoint', true).'</td>' : '' ?>
+                        <?php
+                            $picup_point = get_post_meta($passenger_id, 'wbtm_pickpoint', true);
+                            echo (!$subscription_fields_heading) ? '<td>'.($picup_point ? $picup_point : "-").'</td>' : '' 
+                        ?>
 
                         <td><?php echo wc_price(get_post_meta($passenger_id, 'wbtm_bus_fare', true)); ?></td>
+                        <?php 
+                            if($bus_type == 'sub') {
+                                $checkin_count = get_post_meta($passenger_id, 'wbtm_ticket_checkin_count', true);
+                                $checkin_limit = '∞';
+                                if(function_exists('wbtm_ticket_checkin_limit')) {
+                                    $checkin_limit = wbtm_ticket_checkin_limit($bus_id, $sub_route_type, $boarding, $dropping, $city_zone, $billing_type);
+                                }
+
+                                // Check in Count
+                                if ($checkin_count) {
+                                    echo '<td>' . $checkin_count .' / <span>'.$checkin_limit. '</span></td>';
+                                } else {
+                                    echo '<td>0 / <span>'.$checkin_limit.'</span></td>';
+                                }
+                            } else {
+                                $general_check_in_check = get_post_meta($passenger_id, 'wbtm_ticket_status', true);
+                                echo '<td style="width:86px;text-align:center;">'.($general_check_in_check == "2" ? '<span class="wbtm_ticket_checking wbtm_checked_in">Checked</span>' : '<span class="wbtm_ticket_checking wbtm_not_checked_in">Not Checked</span>').'</td>';
+                            }
+
+                        ?>
                         <td>
                             <?php
                             if ($order) {
-                                echo $order->get_status();
+                                echo ($order->get_status() ? ucfirst($order->get_status()) : null);
                             }
                             ?>
                             <?php //do_action('wbtm_ticket_status',$_passger->ticket_status); ?>
                         </td>
-                        <td>
+                        <td style="width:90px">
+                            <div>
+                                <a href="<?php echo admin_url('edit.php?post_type=wbtm_bus&page=passenger_list&mode=passenger_info_edit&booking_id='.$passenger_id) ?>" title="<?php _e('Passenger info edit', 'addon-bus--ticket-booking-with-seat-pro'); ?>"><span class="dashicons dashicons-edit"></span></a>
+                                <a href="<?php echo $download_url; ?>" target="_blank" title="Download PDF"><span
+                                            class="dashicons dashicons-tickets-alt"></span></a>
 
-                            <a href="<?php echo $download_url; ?>" title="Download PDF"><span
-                                        class="dashicons dashicons-tickets-alt"></span></a>
-
-                            <a href="<?php echo get_admin_url(); ?>edit.php?post_type=wbtm_bus&page=passenger_list&action=delete_seat&booking_id=<?php echo $_passger->ID; ?>"
-                               title="Delete Data" onclick="javascript:return confirm('Are you sure you want to delete this seat?')"><span class="dashicons dashicons-no" style="color:#f44336"></span></a>
-
+                                <a href="<?php echo get_admin_url(); ?>edit.php?post_type=wbtm_bus&page=passenger_list&action=delete_seat&booking_id=<?php echo $_passger->ID; ?>"
+                                title="Delete Data" onclick="javascript:return confirm('Are you sure you want to delete this seat?')"><span class="dashicons dashicons-no"></span></a>
+                            </div>
                         </td>
                     </tr>
                     <?php
@@ -790,4 +882,107 @@ function mage_pagination($current_page, $pages)
     // Display the paging information
     $output = '<div class="mage-pagination"><p>' . $prevlink . ' Page ' . $current_page . ' of ' . $pages . ' ' . $nextlink . ' </p></div>';
     return $output;
+}
+
+
+// Passenger Info Editing
+function wbtm_passenger_info_edit($booking_id) {
+
+
+    if(isset($_POST['passenger_info_update'])) {
+
+        $user_name = isset($_POST['wbtm_user_name']) ? $_POST['wbtm_user_name'] : null;
+        $user_email = isset($_POST['wbtm_user_email']) ? $_POST['wbtm_user_email'] : null;
+        $user_phone = isset($_POST['wbtm_user_phone']) ? $_POST['wbtm_user_phone'] : null;
+        $user_gender = isset($_POST['wbtm_user_gender']) ? $_POST['wbtm_user_gender'] : null;
+        $user_address = isset($_POST['wbtm_user_address']) ? $_POST['wbtm_user_address'] : null;
+        
+        // Update Booking data
+        update_post_meta($booking_id, 'wbtm_user_name', $user_name);
+        update_post_meta($booking_id, 'wbtm_user_email', $user_email);
+        update_post_meta($booking_id, 'wbtm_user_phone', $user_phone);
+        update_post_meta($booking_id, 'wbtm_user_gender', $user_gender);
+        update_post_meta($booking_id, 'wbtm_user_address', $user_address);
+
+        // Additional Data
+        if(isset($_POST['user_additional_name'])) {
+            $user_additional_update = array();
+            if($_POST['user_additional_name']) {
+                foreach($_POST['user_additional_name'] as $item) {
+                    $user_additional_update[] = array(
+                            'name' => $item['name'],
+                            'value' => $item['value'],
+                    );
+                }
+            }
+
+            update_post_meta($booking_id, 'wbtm_user_additional', $user_additional_update);
+        }
+
+    }
+
+
+    // Get Booking data
+    $user_name = get_post_meta($booking_id, 'wbtm_user_name', true);
+    $user_email = get_post_meta($booking_id, 'wbtm_user_email', true);
+    $user_phone = get_post_meta($booking_id, 'wbtm_user_phone', true);
+    $user_gender = get_post_meta($booking_id, 'wbtm_user_gender', true);
+    $user_address = get_post_meta($booking_id, 'wbtm_user_address', true);
+
+    // Passenger Additional
+    $user_additional = get_post_meta($booking_id, 'wbtm_user_additional', true);
+    $user_additional_html = '';
+    if($user_additional) {
+        $i = 0;
+        foreach($user_additional as $info) {
+            $user_additional_html .= '<tr>';
+            $user_additional_html .= '<th>'.__($info['name'], "ddon-bus--ticket-booking-with-seat-pro").'</th>';
+            $user_additional_html .= '<td><input type="hidden" name="user_additional_name['.$i.'][name]" value="'.$info["name"].'"><input type="text" name="user_additional_name['.$i.'][value]" value="'.$info["value"].'"></td>';
+            $user_additional_html .= '</tr>';
+            $i++;
+        }
+    }
+
+    // HTML
+    echo '<h2 style="line-height:1">'.__('Update Passenger Info', 'addon-bus--ticket-booking-with-seat-pro').'</h2>';
+    echo '<span style="display:inline-block;margin-bottom:5px">Booking no #'.$booking_id.'</span>'
+
+    ?>
+    <form action="" method="POST">
+        <table class="wp-list-table widefat striped posts extra_service_list_table" style="width: 100%;margin-bottom: 10px;">
+                <tr>
+                    <th><?php _e('Name', 'addon-bus--ticket-booking-with-seat-pro') ?></th>
+                    <td><input type="text" name="wbtm_user_name" value="<?php echo $user_name; ?>"></td>
+                </tr>
+                    <th><?php _e('Email', 'addon-bus--ticket-booking-with-seat-pro') ?></th>
+                    <td><input type="text" name="wbtm_user_email" value="<?php echo $user_email; ?>"></td>
+                </tr>
+                    <th><?php _e('Phone', 'addon-bus--ticket-booking-with-seat-pro') ?></th>
+                    <td><input type="text" name="wbtm_user_phone" value="<?php echo $user_phone; ?>"></td>
+                </tr>
+                    <th><?php _e('Address', 'addon-bus--ticket-booking-with-seat-pro') ?></th>
+                    <td><input type="text" name="wbtm_user_address" value="<?php echo $user_address; ?>"></td>
+                </tr>
+                <tr>
+                    <th><?php _e('Gender', 'addon-bus--ticket-booking-with-seat-pro') ?></th>
+                    <td>
+                        <select name="wbtm_user_gender">
+                            <option value=""><?php _e('Select Gender', 'addon-bus--ticket-booking-with-seat-pro') ?></option>
+                            <option value="male" <?php echo strtolower($user_gender) == 'male' ? 'selected' : null; ?>><?php _e('Male', 'addon-bus--ticket-booking-with-seat-pro') ?></option>
+                            <option value="female" <?php echo strtolower($user_gender) == 'female' ? 'selected' : null; ?>><?php _e('Female', 'addon-bus--ticket-booking-with-seat-pro') ?></option>
+                        </select>
+                    </td>
+                </tr>
+            <?php
+            if($user_additional_html) {
+                echo $user_additional_html;
+            }
+            ?>
+        </table>
+        <input style="background-color:#4caf50;" class="wbtm_btn" type="submit" name="passenger_info_update" value="<?php _e('Update Passenger Info', 'addon-bus--ticket-booking-with-seat-pro'); ?>">
+        <a class="wbtm_btn" href="<?php echo admin_url('edit.php?post_type=wbtm_bus&page=passenger_list') ?>"><?php _e('Go back', 'addon-bus--ticket-booking-with-seat-pro'); ?></a>
+    </form>
+    <?php
+
+    return;
 }

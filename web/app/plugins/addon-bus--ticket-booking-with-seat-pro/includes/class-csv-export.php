@@ -42,46 +42,56 @@ function wbtm_csv_head_row($post_id = '', $bus_type = 'general', $route_type = '
 
     if ($bus_type == 'sub' && $route_type != 'city_zone') {
         $head_row = array(
-            'Seat',
-            'Bus Name',
-            'Booking Date',
-            'Start Date',
-            'Valid Till',
-            'Billing Type',
-            'Zone',
-            'From',
-            'To',
-            'Order',
-            'Order Status'
+            __('Seat','addon-bus--ticket-booking-with-seat-pro'),
+            __('Bus Name','addon-bus--ticket-booking-with-seat-pro'),
+            __('Booking Date','addon-bus--ticket-booking-with-seat-pro'),
+            __('Start Date','addon-bus--ticket-booking-with-seat-pro'),
+            __('Valid Till','addon-bus--ticket-booking-with-seat-pro'),
+            __('Billing Type','addon-bus--ticket-booking-with-seat-pro'),
+            __('Zone','addon-bus--ticket-booking-with-seat-pro'),
+            __('From','addon-bus--ticket-booking-with-seat-pro'),
+            __('To','addon-bus--ticket-booking-with-seat-pro'),
+            __('Order','addon-bus--ticket-booking-with-seat-pro'),
+            __('Order Status','addon-bus--ticket-booking-with-seat-pro')
         );
     } elseif ($bus_type == 'sub' && $route_type == 'city_zone') {
         $head_row = array(
-            'Seat',
-            'Bus Name',
-            'Booking Date',
-            'Start Date',
-            'Valid Till',
-            'Billing Type',
-            'Zone',
-            'Order',
-            'Order Status'
+            __('Seat','addon-bus--ticket-booking-with-seat-pro'),
+            __('Bus Name','addon-bus--ticket-booking-with-seat-pro'),
+            __('Booking Date','addon-bus--ticket-booking-with-seat-pro'),
+            __('Start Date','addon-bus--ticket-booking-with-seat-pro'),
+            __('Valid Till','addon-bus--ticket-booking-with-seat-pro'),
+            __('Billing Type','addon-bus--ticket-booking-with-seat-pro'),
+            __('Zone','addon-bus--ticket-booking-with-seat-pro'),
+            __('Order','addon-bus--ticket-booking-with-seat-pro'),
+            __('Order Status','addon-bus--ticket-booking-with-seat-pro')            
+        
         );
     } else {
         $head_row = array(
-            'Seat',
-            'Bus Name',
-            'Booking Date',
-            'Journey Date',
-            'From',
-            'To',
-            'Pickup Point',
-            'Order',
-            'Order Status'
+            __('Extra Passenger Field','addon-bus--ticket-booking-with-seat-pro'),
+            __('Seat','addon-bus--ticket-booking-with-seat-pro'),
+            __('Bus Name','addon-bus--ticket-booking-with-seat-pro'),
+            __('Booking Date','addon-bus--ticket-booking-with-seat-pro'),
+            __('Journey Date','addon-bus--ticket-booking-with-seat-pro'),
+            __('From','addon-bus--ticket-booking-with-seat-pro'),
+            __('To','addon-bus--ticket-booking-with-seat-pro'),
+            __('Pickup Point','addon-bus--ticket-booking-with-seat-pro'),
+            __('Order','addon-bus--ticket-booking-with-seat-pro'),
+            __('Order Status','addon-bus--ticket-booking-with-seat-pro')            
         );
     }
 
     if (count($billing_default_fields_setting) > 0) {
         $head_row = array_merge($billing_default_heading_array, $head_row);
+    }
+
+    // Extra Checkout field
+    $get_settings = get_option('wbtm_bus_settings');
+    $get_val = isset($get_settings['custom_fields']) ? $get_settings['custom_fields'] : '';
+    $output = $get_val ? $get_val : null;
+    if($output) {
+        $head_row = array_merge($head_row, array('Extra Checkout field'));
     }
 
     return $head_row;
@@ -92,6 +102,10 @@ function wbtm_csv_passenger_data($post_id = '', $bus_type = 'general', $route_ty
     global $wbtmmain;
     $order_id = get_post_meta($post_id, 'wbtm_order_id', true);
     $order = wc_get_order($order_id);
+    $billing = array();
+    if($order) {
+        $billing = $order->get_address('billing');
+    }
     $order_meta_data = get_post_meta($order_id);
     $billing_default_fields_setting = $wbtmmain->bus_get_option('default_billing_fields_setting', 'ticket_manager_settings', array());
 
@@ -107,22 +121,22 @@ function wbtm_csv_passenger_data($post_id = '', $bus_type = 'general', $route_ty
         $billing_default_heading_array[] = get_post_meta($post_id, 'wbtm_user_email', true);
     }
     if (in_array('p_company', $billing_default_fields_setting)) {
-        $billing_default_heading_array[] = $order_meta_data['_billing_company'][0];
+        $billing_default_heading_array[] = ($billing ? $billing['company'] : '');
     }
     if (in_array('p_address', $billing_default_fields_setting)) {
-        $billing_default_heading_array[] = $order_meta_data['_billing_address_1'][0];
+        $billing_default_heading_array[] = ($billing ? $billing['address_1'] : '');
     }
     if (in_array('p_city', $billing_default_fields_setting)) {
-        $billing_default_heading_array[] = $order_meta_data['_billing_city'][0];
+        $billing_default_heading_array[] = ($billing ? $billing['city'] : '');
     }
     if (in_array('p_state', $billing_default_fields_setting)) {
-        $billing_default_heading_array[] = $order_meta_data['_billing_state'][0];
+        $billing_default_heading_array[] = ($billing ? $billing['state'] : '');
     }
     if (in_array('p_postcode', $billing_default_fields_setting)) {
-        $billing_default_heading_array[] = $order_meta_data['_billing_postcode'][0];
+        $billing_default_heading_array[] = ($billing ? $billing['postcode'] : '');
     }
     if (in_array('p_country', $billing_default_fields_setting)) {
-        $billing_default_heading_array[] = $order_meta_data['_billing_country'][0];
+        $billing_default_heading_array[] = ($billing ? $billing['country'] : '');
     }
     if (in_array('p_total_paid', $billing_default_fields_setting)) {
         $billing_default_heading_array[] = get_post_meta($post_id, 'wbtm_bus_fare', true);
@@ -153,9 +167,9 @@ function wbtm_csv_passenger_data($post_id = '', $bus_type = 'general', $route_ty
         $passenger_data = array(
             get_post_meta($post_id, 'wbtm_seat', true),
             get_the_title(get_post_meta($post_id, 'wbtm_bus_id', true)) . "-" . get_post_meta(get_post_meta($post_id, 'wbtm_bus_id', true), 'wbtm_bus_no', true),
-            get_post_meta($post_id, 'wbtm_booking_date', true),
-            get_post_meta($post_id, 'wbtm_journey_date', true) . ' ' . get_post_meta($post_id, 'wbtm_bus_start', true),
-            $valid_till,
+            mage_wp_date(get_post_meta($post_id, 'wbtm_booking_date', true)),
+            mage_wp_date(get_post_meta($post_id, 'wbtm_journey_date', true)) . ' ' . get_post_meta($post_id, 'wbtm_bus_start', true),
+            mage_wp_date($valid_till),
             $billing_type_str,
             $zone_text,
             get_post_meta($post_id, 'wbtm_boarding_point', true),
@@ -168,8 +182,8 @@ function wbtm_csv_passenger_data($post_id = '', $bus_type = 'general', $route_ty
         $passenger_data = array(
             get_post_meta($post_id, 'wbtm_seat', true),
             get_the_title(get_post_meta($post_id, 'wbtm_bus_id', true)) . "-" . get_post_meta(get_post_meta($post_id, 'wbtm_bus_id', true), 'wbtm_bus_no', true),
-            get_post_meta($post_id, 'wbtm_booking_date', true),
-            get_post_meta($post_id, 'wbtm_journey_date', true) . ' ' . get_post_meta($post_id, 'wbtm_bus_start', true),
+            mage_wp_date(get_post_meta($post_id, 'wbtm_booking_date', true)),
+            mage_wp_date(get_post_meta($post_id, 'wbtm_journey_date', true)) . ' ' . get_post_meta($post_id, 'wbtm_bus_start', true),
             $valid_till,
             $billing_type_str,
             $zone_text,
@@ -177,11 +191,27 @@ function wbtm_csv_passenger_data($post_id = '', $bus_type = 'general', $route_ty
             $status
         );
     } else {
+        $passenger_additional = get_post_meta($post_id, 'wbtm_user_additional', true);
+        $passenger_additional_html = '';
+        if($passenger_additional) {
+            $passenger_additional_arr = maybe_unserialize($passenger_additional);
+            if($passenger_additional_arr) {
+                $z = 0;
+                foreach($passenger_additional_arr as $item) {
+                    $passenger_additional_html .= sprintf("%s = %s", $item['name'], $item['value']). (count($passenger_additional_arr) -1 == $z ? '' : ' + ');
+
+                    $z++;
+                }
+            }
+
+        }
+
         $passenger_data = array(
+            $passenger_additional_html,
             get_post_meta($post_id, 'wbtm_seat', true),
             get_the_title(get_post_meta($post_id, 'wbtm_bus_id', true)) . "-" . get_post_meta(get_post_meta($post_id, 'wbtm_bus_id', true), 'wbtm_bus_no', true),
-            get_post_meta($post_id, 'wbtm_booking_date', true),
-            get_post_meta($post_id, 'wbtm_journey_date', true) . ' ' . get_post_meta($post_id, 'wbtm_bus_start', true),
+            mage_wp_date(get_post_meta($post_id, 'wbtm_booking_date', true)),
+            mage_wp_date(get_post_meta($post_id, 'wbtm_journey_date', true)) . ' ' . get_post_meta($post_id, 'wbtm_bus_start', true),
             get_post_meta($post_id, 'wbtm_boarding_point', true),
             get_post_meta($post_id, 'wbtm_droping_point', true),
             get_post_meta($post_id, 'wbtm_pickpoint', true),
@@ -194,6 +224,32 @@ function wbtm_csv_passenger_data($post_id = '', $bus_type = 'general', $route_ty
         $passenger_data = array_merge($billing_default_heading_array, $passenger_data);
     }
 
+    // Extra Checkout field
+    $get_settings = get_option('wbtm_bus_settings');
+    $get_val = isset($get_settings['custom_fields']) ? $get_settings['custom_fields'] : '';
+    $output = $get_val ? $get_val : null;
+    $custom_fields_html = '';
+    if ($output) {
+        $get_custom_fields_arr = explode(',', $output);
+        if ($get_custom_fields_arr) {
+            $z = 0;
+            foreach ($get_custom_fields_arr as $item) {
+                $item = trim($item);
+                if ($item) {
+                    $data = get_post_meta($order_id, 'wbtm_custom_field_'.$item, true);
+                    if($data) {
+                        $custom_fields_html .= sprintf("%s = %s", ucfirst(str_replace('_', ' ', $item)), $data).((count($get_custom_fields_arr) - 1) == $z ? '' : ' + ');
+                        $z++;
+                    }
+                }
+            }
+        }
+    }
+
+    if($custom_fields_html) {
+        array_push($passenger_data, $custom_fields_html);
+    }
+    // Extra Checkout field
 
     return $passenger_data;
 }
@@ -208,13 +264,14 @@ if (isset($_GET['action']) && $_GET['action'] == 'export_passenger_list') {
 function wpmsems_export_default_form()
 {
     // Check for current user privileges 
-    if (!current_user_can('manage_options')) {
+    if (!current_user_can('manage_options') && !current_user_can('my_sell_wbtm_bus')) {
         return false;
     }
-    // Check if we are in WP-Admin
-    if (!is_admin()) {
-        return false;
-    }
+    // // Check if we are in WP-Admin
+    // if (!is_admin()) {
+    //     return false;
+    // }
+
     ob_start();
     $bus_id = strip_tags($_GET['bus_id']);
     $j_date = strip_tags($_GET['j_date']);
@@ -255,6 +312,18 @@ function wpmsems_export_default_form()
     // Filter Meta
     $has_filter = false;
 
+    // By User
+    $userID = (isset($_GET['userID']) ? strip_tags($_GET['userID']) : null);
+    if ($userID) {
+
+        array_push($filter_query, array(
+            'key' => 'wbtm_user_id',
+            'value' => $userID,
+            'compare' => '='
+        ));
+        $has_filter = true;
+    }
+
     // Bus Id
     $bus_id = (isset($_GET['bus_id']) ? strip_tags($_GET['bus_id']) : null);
     if ($bus_id) {
@@ -270,11 +339,21 @@ function wpmsems_export_default_form()
     }
     // Journey Date
     $j_date = (isset($_GET['j_date']) ? strip_tags($_GET['j_date']) : null);
+    $j_dates = array($j_date);
+    if($bus_id && $j_date) {
+        $bus_start_stops_arr = get_post_meta($bus_id, 'wbtm_bus_bp_stops', true);
+        $bus_start_stops_arr = $bus_start_stops_arr ? maybe_unserialize($bus_start_stops_arr) : array();
+        $is_midnight = mage_bus_is_midnight_trip($bus_start_stops_arr);
+        if($is_midnight) {
+            $next_date = date('Y-m-d', strtotime('+1 day', strtotime($j_date)));
+            array_push($j_dates, $next_date);
+        }
+    }
     if ($j_date) {
         array_push($filter_query, array(
             'key' => 'wbtm_journey_date',
-            'value' => $j_date,
-            'compare' => '='
+            'value' => $j_dates,
+            'compare' => 'IN'
         ));
         $has_filter = true;
     }

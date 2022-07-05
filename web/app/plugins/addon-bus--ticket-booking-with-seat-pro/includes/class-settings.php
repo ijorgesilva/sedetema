@@ -202,7 +202,7 @@ class WbtmProSettings{
 
         // ***************
         $custom_field_settings = array(
-            'page_nav' 	=> __( '<i class="fas fa-file-pdf"></i> Checkout Field', 'addon-bus--ticket-booking-with-seat-pro' ),
+            'page_nav' 	=> __( '<i class="fas fa-shopping-cart"></i> Checkout Field', 'addon-bus--ticket-booking-with-seat-pro' ),
             'priority' => 10,
             'page_settings' => array(
                 'section_20' => array(

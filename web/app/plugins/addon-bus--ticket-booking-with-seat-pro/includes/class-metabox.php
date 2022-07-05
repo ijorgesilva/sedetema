@@ -70,13 +70,13 @@ if(class_exists('AddMetaBox')){
                                 'id'		    => 'wbtm_extra_max_qty',
                                 'type'		    => 'text',
                                 'args' => '',
-                                'title'		    => 'Maximum Bag Allow',
+                                'title'		    => __('Maximum Bag Allow','addon-bus--ticket-booking-with-seat-pro'),
                             ),
                             array(
                                 'id'		    => 'wbtm_extra_bag_price',
                                 'type'		    => 'text',
                                 'args' => '',
-                                'title'		    => 'Per Bag Price',
+                                'title'		    => __('Per Bag Price','addon-bus--ticket-booking-with-seat-pro'),
                             ),
                             array(
                                 'id'		=> 'attendee_reg_form',
@@ -84,7 +84,7 @@ if(class_exists('AddMetaBox')){
                                 'details'	=> __('Build Your Attendee Form','addon-bus--ticket-booking-with-seat-pro'),
                                 'collapsible'=>true,
                                 'type'		=> 'repeatable',
-                                'btn_text'   =>'Add New Field',
+                                'btn_text'   => __('Add New Field','addon-bus--ticket-booking-with-seat-pro'),
                                 'title_field' => 'field_label',
                                 'args' => '',
                                 'fields'    => array(
@@ -108,13 +108,13 @@ if(class_exists('AddMetaBox')){
                                         'item_id'   =>'filed_type',
                                         'name'      =>'Type',
                                         'args'      => array(
-                                            'text'      =>'Text',
-                                            'number'    =>'Number',
-                                            'select'    =>'Select',
-                                            'checkbox'  =>'Checkbox',
-                                            'radio'     =>'Radio',
-                                            'textarea'  =>'Textarea',
-                                            'email'     =>'Email'
+                                            'text'      => __('Text','addon-bus--ticket-booking-with-seat-pro'),
+                                            'number'    =>__('Number','addon-bus--ticket-booking-with-seat-pro'),
+                                            'select'    =>__('Select','addon-bus--ticket-booking-with-seat-pro'),
+                                            'checkbox'  =>__('Checkbox','addon-bus--ticket-booking-with-seat-pro'),
+                                            'radio'     =>__('Radio','addon-bus--ticket-booking-with-seat-pro'),
+                                            'textarea'  =>__('Textarea','addon-bus--ticket-booking-with-seat-pro'),
+                                            'email'     =>__('Email','addon-bus--ticket-booking-with-seat-pro')
                                         )
                                     ),
                                     array(
@@ -123,7 +123,7 @@ if(class_exists('AddMetaBox')){
                                         'name'=>'Required?',
                                         'default'=>'',
                                         'args'=> array(
-                                            'required'=>'Required'
+                                            'required'=> __('Required','addon-bus--ticket-booking-with-seat-pro')
                                         )
                                     ),
                                     array(

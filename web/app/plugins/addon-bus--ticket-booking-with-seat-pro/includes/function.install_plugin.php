@@ -8,7 +8,7 @@ function wbtm_pro_install_mage_pdf(){
     include_once( ABSPATH . 'wp-admin/includes/file.php' );
     include_once( ABSPATH . 'wp-admin/includes/misc.php' );
     include_once( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' );
-    $upgrader = new Plugin_Upgrader( new Plugin_Installer_Skin( compact('title', 'url', 'nonce', 'plugin', 'api') ) );
+    $upgrader = new Plugin_Upgrader( new Plugin_Installer_Skin() );
     $upgrader->install('https://github.com/magepeopleteam/magepeople-pdf-support/archive/master.zip');
 }
 

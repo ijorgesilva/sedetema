@@ -5,7 +5,7 @@
 * Author        : @MagePeople 
 */
 
-if ( ! defined('ABSPATH')) exit;  // if direct access
+if (!defined('ABSPATH')) exit;  // if direct access
 global $wbtmmain, $magepdf;
 $logo = wp_get_attachment_url($wbtmmain->bus_get_option('pdf_logo', 'ticket_manager_settings', ''));
 $bg = wp_get_attachment_url($wbtmmain->bus_get_option('pdf_bacckground_image', 'ticket_manager_settings', ''));
@@ -20,188 +20,186 @@ $date_format = get_option('date_format');
 $time_format = get_option('time_format');
 $datetimeformat = $date_format . '  ' . $time_format;
 ?>
-    <style type="text/css">
-        .mep_ticket_body {
-            background: <?php echo $bg_color; ?>;
-            padding: 0 10px;
-        <?php if($text_color) { ?> color: <?php echo $text_color; ?>;
-        <?php }else{ ?> color: #000;
-        <?php } ?> position: relative;
+<style>
+    .mep_ticket_body {
+        background: <?php echo $bg_color; ?>;
+        padding: 0;
+        position: relative;
+        color: <?php echo (($text_color) ? $text_color : '#000') ?>;
+    }
 
-        }
+    .pdf-header {
+        text-align: left;
+        border-bottom: 1px solid #666;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+    }
 
-        .pdf-ticket-body {
-            background: #fff;
-            padding: 10px;
-            margin: 0 auto;
-            width: 100%;
-            max-width: 680px;
-        }
+    .pdf-header img {
+        max-width: 200px;
+        height: auto;
+    }
 
-        .pdf-header {
-            text-align: left;
-            border-bottom: 1px solid #666;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-        }
+    .pdf-header p {
+        margin: 0;
+        padding: 0;
+        font-size: 12px
+    }
 
-        .pdf-header img {
-            max-width: 200px;
-            height: auto;
-        }
+    .wbtm-ticket {
+        padding: 10px;
+        border: 1px solid #666;
+        width: 100%;
+    }
 
-        .pdf-header p {
-            margin: 0;
-            padding: 0;
-            font-size: 12px
-        }
+    .pdf-header h4,
+    .pdf-header h5 {
+        padding: 0;
+        margin: 10px 0;
+        font-size: 14px;
+    }
 
-        .wbtm-ticket {
-            padding: 10px;
-            border: 1px solid #666;
-            width: 100%;
-        }
+    /*Tickets*/
+    .wbtm-ticket-body {
+        background: #fff;
+        padding: 10px;
+        margin: 40px 0 50px;
+        width: 100%;
+        overflow: hidden;
+        display: block;
+    }
 
-        .pdf-header h4,
-        .pdf-header h5 {
-            padding: 0;
-            margin: 10px 0;
-            font-size: 14px;
-        }
+    .wbtm-ticket-body table {
+        width: 100%;
+        overflow: hidden;
+        display: block;
+    }
 
-        /*Tickets*/
-        .wbtm-ticket-body {
-            background: #fff;
-            padding: 10px;
-            margin: 40px 0 50px;
-            width: 100%;
-            overflow: hidden;
-            display: block;
-        }
+    .wbtm-ticket-body table tr {
+        border: 1px solid #fbfbfb !important;
+    }
 
-        .wbtm-ticket-body table {
-            width: 100%;
-            overflow: hidden;
-            display: block;
-        }
+    .wbtm-ticket-body table tr td {
+        padding: 6px;
+        font-size: 15px;
+        border-bottom: 1px solid #666;
+    }
 
-        .wbtm-ticket-body table tr {
-            border: 1px solid #fbfbfb !important;
-        }
+    .wbtm-ticket-body table tr td h3 {
+        padding: 10px 0;
+        margin: 0;
+        font-size: 25px;
+    }
 
-        .wbtm-ticket-body table tr td {
-            padding: 6px;
-            font-size: 15px;
-            border-bottom: 1px solid #666;
-        }
+    .ticket-search h2 {
+        margin: 0;
+        padding: 0 0 20px 0;
+    }
 
-        .wbtm-ticket-body table tr td h3 {
-            padding: 10px 0;
-            margin: 0;
-            font-size: 25px;
-        }
+    .ticket-search input {
+        display: block;
+        width: 100%;
+        padding: 7px;
+        margin-bottom: 10px;
+    }
 
-        .ticket-search {
-            width: 400px;
-            background: #fff;
-            text-align: center;
-            padding: 20px;
-            margin: 30px auto;
-            border: 1px solid #666;
-        }
+    .ticket-search button {
+        background: #676fec;
+        color: #fff;
+        border: 0;
+        padding: 10px 20px;
+        font-size: 15px;
+    }
 
-        .ticket-search h2 {
-            margin: 0;
-            padding: 0 0 20px 0;
-        }
+    span.wbtm-ticket-hold {
+        background: #d0d0d0;
+        padding: 5px 20px;
+    }
 
-        .ticket-search input {
-            display: block;
-            width: 100%;
-            padding: 7px;
-            margin-bottom: 10px;
-        }
+    span.wbtm-ticket-confirm {
+        background: #02792f;
+        padding: 5px 20px;
+        color: #fff;
+    }
 
-        .ticket-search button {
-            background: #676fec;
-            color: #fff;
-            border: 0;
-            padding: 10px 20px;
-            font-size: 15px;
-        }
+    input.ticket-input {
+        padding: 10px !important;
+        margin-bottom: 30px !important;
+    }
 
-        span.wbtm-ticket-hold {
-            background: #d0d0d0;
-            padding: 5px 20px;
-        }
+    .wbtm-ticket-single {
+        padding: 3px;
+    }
 
-        span.wbtm-ticket-confirm {
-            background: #02792f;
-            padding: 5px 20px;
-            color: #fff;
-        }
+    .wbtm-ticket-single .wbtm-ticket-inline {
+        /* display: inline-block; */
+        float: left;
+        width: 48%;
+        position: relative;
+    }
 
-        input.ticket-input {
-            padding: 10px !important;
-            margin-bottom: 30px !important;
-        }
+    .wbtm-bus-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: red;
+    }
 
-        .wbtm-ticket-single {
-            padding: 3px;
-        }
+    .wbtm-ticket-qr-code {
+        text-align: center;
+    }
 
-        .wbtm-ticket-single .wbtm-ticket-inline {
-            /* display: inline-block; */
-            float: left;
-            width: 48%;
-            position: relative;
-        }
+    .wbtm-ticket-qr-code img {
+        width: 110px;
+        border: 1px solid #666;
+        margin-bottom: 20px;
+    }
 
-        .wbtm-bus-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: red;
-        }
+    .mep_event_ticket_terms h3 {
+        font-size: 15px;
+    }
 
-        .wbtm-ticket-qr-code {
-            text-align: center;
-        }
+    .mep_event_ticket_terms {
+        text-align: center;
+        margin: 30px 0;
+        /* border-top:1px solid #666; */
+        font-size: 12px;
+    }
 
-        .wbtm-ticket-qr-code img {
-            width: 110px;
-            border: 1px solid #666;
-            margin-bottom: 20px;
-        }
+    .page_break {
+        page-break-after: always;
+    }
 
-        .mep_event_ticket_terms h3 {
-            font-size: 15px;
-        }
+    .page_break:last-child {
+        page-break-after: auto;
+    }
 
-        .mep_event_ticket_terms {
-            text-align: center;
-            margin: 30px 0;
-            /* border-top:1px solid #666; */
-            font-size: 12px;
-        }
+    .bus-ticket-logo img {
+        width: 80px;
+    }
 
-        .page_break {
-            page-break-after: always;
-        }
+    .border {
+        border-bottom: 1px solid #666;
+        padding-bottom: 4px;
+    }
 
-        .page_break:last-child {
-            page-break-after: auto;
-        }
+    .wbtm_pdf_table {
+        border-collapse: separate;
+        width: 100%;
+    }
 
-        .bus-ticket-logo img {
-            width: 80px;
-        }
+    .wbtm_pdf_table th,
+    .wbtm_pdf_table td {
+        text-align: left;
+        border: 1px solid #aaa;
+        font-size: 14px;
+        padding: 5px;
+    }
 
-        .border {
-            border-bottom: 1px solid #666;
-            padding-bottom: 4px;
-        }
-    </style>
-    <!-- <div class='pdf-ticket-body' > -->
+    .wbtm_pdf_table th {
+        background: #ccc;
+    }
+</style>
+<!-- <div class='pdf-ticket-body' > -->
 <?php
 
 $args = array(
@@ -219,7 +217,7 @@ $args = array(
 );
 
 $ticket_query = new WP_Query($args);
-echo '<div class="wbtm-ticket-body wbtm-tickets">';
+//echo '<div class="wbtm-ticket-body wbtm-tickets">';
 
 // Merge pdf ticket setting
 $get_settings = get_option('wbtm_bus_settings');
@@ -231,6 +229,7 @@ $seat_all = '';
 $total_fare = 0;
 $index = 0;
 $name_array = array();
+$extra_services = array();
 foreach ($ticket_query->posts as $_ticket) {
     $index++;
     $ticket = $_ticket->ID;
@@ -250,24 +249,35 @@ foreach ($ticket_query->posts as $_ticket) {
     $phone = get_post_meta($ticket, 'wbtm_user_phone', true);
     $gender = get_post_meta($ticket, 'wbtm_user_gender', true);
     $address = get_post_meta($ticket, 'wbtm_user_address', true);
+    $wbtm_user_extra_bag = get_post_meta($ticket, 'wbtm_user_extra_bag', true);
+    $passenger_type = get_post_meta($ticket, 'wbtm_passenger_type', true);
+
+    $show_dropping_time = get_post_meta($bus_id, 'show_dropping_time', true);
+    $show_dropping_time = $show_dropping_time ? $show_dropping_time : 'yes';
 
     // $extra_bag      = get_post_meta($ticket,'wbtm_user_extra_bag',true);
 
     $pin = $order_id . "-" . $ticket . "-" . $user_id . "-" . $bus_id;
+    $bus_type = get_post_meta($bus_id, 'wbtm_seat_type_conf', true);
     $order = wc_get_order($order_id);
+    // $order_data = $order->get_data();
+    // echo '<pre>'; print_r($order_data); die;
     // $price_arr      = get_post_meta($bus_id,'wbtm_bus_prices',true);
     // $fare           = wbtm_get_bus_price($ticket->boarding_point,$ticket->droping_point, $price_arr);
+
+    // Extra Services
+    $extra_services = array();
+    $extra_services = get_post_meta($order_id, '_extra_services', true);
 
     // Subscription Bus
     $valid_till = '';
     $zone_text = '';
     $billing_type = get_post_meta($ticket, 'wbtm_billing_type', true);
-    if($billing_type) {
+    $zone = get_post_meta($ticket, 'wbtm_city_zone', true);
+    if ($billing_type) {
         $billing_type_str = trim($billing_type);
         $valid_till = mtsa_calculate_valid_date($journey_date, $billing_type);
-
-        $zone = get_post_meta($ticket, 'wbtm_city_zone', true);
-        if($zone) {
+        if ($zone) {
             $zone = get_term($zone);
             $zone_text = $zone->name;
         }
@@ -302,13 +312,14 @@ foreach ($ticket_query->posts as $_ticket) {
     }
 
     ?>
+    <div class="wbtm-ticket-body wbtm-tickets">
     <div class="mep_ticket_body" <?php if ($bg){ ?>style="background: url(<?php echo $bg; ?>);" <?php } ?> >
         <div class="wbtm-ticket">
             <div class="pdf-header">
                 <div class="wbtm-ticket-single">
                     <div class="wbtm-ticket-inline">
                         <div class='bus-ticket-logo'>
-                            <?php if (!empty($logo)) printf('<img style="width:110px;text-align:left" src="%s"/>', $logo); ?>
+                            <?php if (!empty($logo)) echo '<img style="width:110px;text-align:left" src="'.$logo.'" alt="logo"/>'; ?>
                         </div>
                     </div>
                     <div class="wbtm-ticket-inline">
@@ -336,7 +347,7 @@ foreach ($ticket_query->posts as $_ticket) {
             <div class="wbtm-ticket-single">
                 <?php if ($name) { ?>
                     <div class="wbtm-ticket-inline border">
-                        <strong><?php _e('Name:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo $final_name; ?>
+                        <strong><?php _e('Name', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo $final_name; ?>
                     </div>
                 <?php }
                 if ($phone) { ?>
@@ -362,51 +373,63 @@ foreach ($ticket_query->posts as $_ticket) {
                 ?>
             </div>
 
-            <?php
+            <?php if ($wbtm_user_extra_bag) { ?>
+                <div class="wbtm-ticket-single">
+                    <div class="wbtm-ticket-inline border">
+                        <strong><?php _e('Extra Bag:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo $wbtm_user_extra_bag; ?>
+                    </div>
+                </div>
+            <?php }
 
-            $reg_form_arr = unserialize(get_post_meta($bus_id, 'attendee_reg_form', true));
+            $reg_form_arr = maybe_unserialize(get_post_meta($ticket, 'wbtm_user_additional', true));
             if (is_array($reg_form_arr) && sizeof($reg_form_arr) > 0) {
                 foreach ($reg_form_arr as $builder) {
                     ?>
                     <div class="wbtm-ticket-single">
                         <div class="wbtm-ticket-inline border">
-                            <strong><?php echo $builder['field_label']; ?></strong>
-                            <?php echo get_post_meta($ticket, $builder['field_id'], true); ?>
+                            <strong><?php echo $builder['name']; ?>:</strong>
+                            <?php echo $builder['value']; ?>
                         </div>
                     </div>
 
                     <?php
                 }
-            }
-            if ($address) { ?>
-                <div class="wbtm-ticket-single">
-                    <div class="wbtm-ticket-inline border">
-                        <strong><?php _e('Address:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo $address; ?>
-                    </div>
-                </div>
-            <?php } ?>
+            } ?>
 
             <div class="wbtm-ticket-single">
-                <?php if($billing_type) : ?>
+                <?php if ($billing_type) : ?>
                     <div class="wbtm-ticket-inline border">
-                        <strong><?php _e('Start Date:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo get_wbtm_datetime($journey_date, 'date'); ?>
+                        <strong><?php _e('Start Date:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo mage_wp_date($journey_date); ?>
                     </div>
                     <div class="wbtm-ticket-inline border">
-                        <strong><?php _e('Valid Till:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo get_wbtm_datetime($valid_till, 'date'); ?>
+                        <strong><?php _e('Valid Till:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo mage_wp_date($valid_till); ?>
                     </div>
                 <?php else : ?>
                     <div class="wbtm-ticket-inline border">
-                        <strong><?php _e('Journey Date:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo get_wbtm_datetime($journey_date, 'date'); ?>
+                        <strong><?php _e('Journey Date:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo mage_wp_date($journey_date); ?>
                     </div>
                     <div class="wbtm-ticket-inline border">
-                        <strong><?php _e('Time:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo $start_time; ?>
+                        <strong><?php _e('Time:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo mage_wp_time($start_time); ?>
                     </div>
                 <?php endif; ?>
             </div>
 
+            <?php if( (!$bus_type || $bus_type == 'wbtm_seat_plan' || $bus_type == 'wbtm_without_seat_plan') && $show_dropping_time == 'yes' ) : // For General Bus only
+                $get_stops_dates = mage_get_bus_stops_date($bus_id, $journey_date, $boarding, $dropping);
+            ?>
+            <div class="wbtm-ticket-single">
+                <div class="wbtm-ticket-inline border">
+                    <strong><?php _e('Arrival Date', 'addon-bus--ticket-booking-with-seat-pro'); ?>:</strong> <?php echo mage_wp_date($get_stops_dates['dropping']); ?>
+                </div>
+                <div class="wbtm-ticket-inline border">
+                    <strong><?php _e('Time', 'addon-bus--ticket-booking-with-seat-pro'); ?>:</strong> <?php echo $get_stops_dates['dropping_time']; ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
             <div class="wbtm-ticket-single">
 
-                <?php if($zone) : ?>
+                <?php if ($zone) : ?>
                     <div class="wbtm-ticket-inline border">
                         <strong><?php _e('Zone:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo $zone_text; ?>
                     </div>
@@ -420,13 +443,14 @@ foreach ($ticket_query->posts as $_ticket) {
                 <?php endif; ?>
 
             </div>
-            <?php if ($pickup_point) { ?>
-                <div class="wbtm-ticket-single">
+
+            <div class="wbtm-ticket-single">
+                <?php if ($pickup_point) { ?>
                     <div class="wbtm-ticket-inline border">
                         <strong><?php _e('Pickup Point:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo $pickup_point; ?>
                     </div>
-                </div>
-            <?php } ?>
+                <?php } ?>
+            </div>
 
             <div class="wbtm-ticket-single">
                 <div class="wbtm-ticket-inline border">
@@ -437,14 +461,22 @@ foreach ($ticket_query->posts as $_ticket) {
                 </div>
             </div>
 
+            <?php if($passenger_type != '') : ?>
             <div class="wbtm-ticket-single">
                 <div class="wbtm-ticket-inline border">
+                    <strong><?php _e('Passenger Type:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo $passenger_type; ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <div class="wbtm-ticket-single">
+                <div class="wbtm-ticket-inline">
                     <strong><?php _e('Price:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php
                     echo wc_price($total_fare);
 
                     ?></div>
-                <div class="wbtm-ticket-inline border">
-                    <strong><?php _e('Purchase on:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo get_wbtm_datetime($booking_date, 'date-time-text'); ?>
+                <div class="wbtm-ticket-inline">
+                    <strong><?php _e('Purchase on:', 'addon-bus--ticket-booking-with-seat-pro'); ?></strong> <?php echo mage_wp_date($booking_date); ?>
                 </div>
             </div>
 
@@ -464,6 +496,43 @@ foreach ($ticket_query->posts as $_ticket) {
         </div>
     </div>
     </div>
-    <div class="page_break"></div>
+    <?php if (($ticket_count) != $index) : ?>
+        <div class="page_break"></div>
+    <?php endif; ?>
+
     <?php
 }
+
+// Extra SErvice
+if ($extra_services) :
+    $extra_services = maybe_unserialize($extra_services);
+    ?>
+    <div class="page_break"></div>
+    <h3><?php _e('Extra Service', 'addon-bus--ticket-booking-with-seat-pro'); ?>:</h3>
+    <span style="background: #ccc"><?php echo __('Order No', 'addon-bus--ticket-booking-with-seat-pro') . ': ' . $order_id; ?></span>
+    <table class="wbtm_pdf_table">
+        <thead>
+        <tr>
+            <th><?php _e('Service Name', 'addon-bus--ticket-booking-with-seat-pro'); ?></th>
+            <th><?php _e('Quantity', 'addon-bus--ticket-booking-with-seat-pro'); ?></th>
+            <th><?php _e('Unit Price', 'addon-bus--ticket-booking-with-seat-pro'); ?></th>
+            <th><?php _e('Total', 'addon-bus--ticket-booking-with-seat-pro'); ?></th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+
+        foreach ($extra_services as $service) :
+            echo '<tr>';
+            echo '<td>' . $service['name'] . '</td>';
+            echo '<td>' . $service['qty'] . '</td>';
+            echo '<td>' . wc_price($service['price']) . '</td>';
+            echo '<td>' . wc_price($service['price'] * $service['qty']) . '</td>';
+            echo '</tr>';
+        endforeach;
+
+        ?>
+        </tbody>
+    </table>
+<?php endif; ?>
+<!-- Extra SErvice END -->
